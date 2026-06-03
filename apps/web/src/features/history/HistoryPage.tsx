@@ -1,22 +1,30 @@
-import { useSignals } from '@preact/signals-react/runtime';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useSignals } from "@preact/signals-react/runtime";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 
-import type { Application } from '@applyai/shared';
-import { formatApplicationDate } from '@applyai/shared';
+import type { Application } from "@applyai/shared";
+import { formatApplicationDate } from "@applyai/shared";
 
-import { SearchIcon } from '../../components/icons';
-import { Badge, Card, ErrorBanner, FilterPill, LoadingState, StatCard } from '../../components/ui';
-import { api } from '../../lib/api';
-import { searchQuery$, selectedId$, statusFilter$ } from '../../signals/app';
-import { ApplicationDetail } from './ApplicationDetail';
+import { SearchIcon } from "../../components/icons";
+import {
+  Badge,
+  Card,
+  ErrorBanner,
+  FilterPill,
+  LoadingState,
+  StatCard,
+} from "../../components/ui";
+import { api } from "../../lib/api";
+import { debounce } from "../../lib/utils";
+import { searchQuery$, selectedId$, statusFilter$ } from "../../signals/app";
+import { ApplicationDetail } from "./ApplicationDetail";
 
 const filterOptions = [
-  { id: 'all', label: 'All' },
-  { id: 'interview', label: 'Interview' },
-  { id: 'applied', label: 'Applied' },
-  { id: 'rejected', label: 'Rejected' },
-  { id: 'no_response', label: 'No response' },
+  { id: "all", label: "All" },
+  { id: "interview", label: "Interview" },
+  { id: "applied", label: "Applied" },
+  { id: "rejected", label: "Rejected" },
+  { id: "no_response", label: "No response" },
 ] as const;
 
 type HistoryPageProps = {
@@ -29,14 +37,20 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
   const statusFilter = statusFilter$.value;
   const searchQuery = searchQuery$.value;
   const selectedId = selectedId$.value;
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+  const syncDebouncedSearch = useMemo(
+    () => debounce((value: string) => setDebouncedSearch(value), 500),
+    [],
+  );
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['applications', statusFilter, searchQuery],
+    queryKey: ["applications", statusFilter, debouncedSearch],
     queryFn: () =>
       api.getApplications({
         status: statusFilter,
-        search: searchQuery || undefined,
+        search: debouncedSearch || undefined,
       }),
+    placeholderData: keepPreviousData,
   });
 
   useEffect(() => {
@@ -46,21 +60,29 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
     }
 
     const currentSelectedId = selectedId$.value;
-    if (!currentSelectedId || !data.applications.some((app) => app.id === currentSelectedId)) {
+    if (
+      !currentSelectedId ||
+      !data.applications.some((app) => app.id === currentSelectedId)
+    ) {
       selectedId$.value = data.applications[0]?.id ?? null;
     }
   }, [data]);
 
   const selectedApplication =
-    data?.applications.find((application) => application.id === selectedId) ?? null;
+    data?.applications.find((application) => application.id === selectedId) ??
+    null;
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return <LoadingState message="Loading your application history..." />;
   }
 
   if (isError) {
     return (
-      <ErrorBanner message={error instanceof Error ? error.message : 'Failed to load history'} />
+      <ErrorBanner
+        message={
+          error instanceof Error ? error.message : "Failed to load history"
+        }
+      />
     );
   }
 
@@ -68,9 +90,21 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
         <StatCard label="Applied" value={data?.stats.applied ?? 0} />
-        <StatCard label="Interview" value={data?.stats.interview ?? 0} tone="success" />
-        <StatCard label="Rejected" value={data?.stats.rejected ?? 0} tone="danger" />
-        <StatCard label="No response" value={data?.stats.noResponse ?? 0} tone="muted" />
+        <StatCard
+          label="Interview"
+          value={data?.stats.interview ?? 0}
+          tone="success"
+        />
+        <StatCard
+          label="Rejected"
+          value={data?.stats.rejected ?? 0}
+          tone="danger"
+        />
+        <StatCard
+          label="No response"
+          value={data?.stats.noResponse ?? 0}
+          tone="muted"
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
@@ -79,7 +113,9 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
             <input
               value={searchQuery}
               onChange={(event) => {
-                searchQuery$.value = event.target.value;
+                const value = event.target.value;
+                searchQuery$.value = value;
+                syncDebouncedSearch(value);
               }}
               placeholder="Search company or role..."
               className="w-full rounded-xl border border-border bg-surface py-3 pr-4 pl-10 text-sm outline-none focus:border-primary"
@@ -114,8 +150,12 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-semibold">{application.companyName}</h3>
-                      <p className="mt-1 text-sm text-muted">{application.jobTitle}</p>
+                      <h3 className="font-semibold">
+                        {application.companyName}
+                      </h3>
+                      <p className="mt-1 text-sm text-muted">
+                        {application.jobTitle}
+                      </p>
                       <p className="mt-3 text-xs text-muted">
                         {formatApplicationDate(application.appliedAt)}
                       </p>
@@ -129,7 +169,9 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
               ))
             ) : (
               <Card>
-                <p className="text-sm text-muted">No applications yet. Create your first one.</p>
+                <p className="text-sm text-muted">
+                  No applications yet. Create your first one.
+                </p>
               </Card>
             )}
           </div>
@@ -137,7 +179,10 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
 
         <section className="rounded-2xl border border-border bg-surface p-6">
           {selectedApplication ? (
-            <ApplicationDetail application={selectedApplication} onReapply={onReapply} />
+            <ApplicationDetail
+              application={selectedApplication}
+              onReapply={onReapply}
+            />
           ) : (
             <div className="flex min-h-80 items-center justify-center text-sm text-muted">
               Select an application to view details
