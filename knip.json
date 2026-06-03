@@ -6,7 +6,7 @@
       "project": ["src/**/*.ts"]
     },
     "apps/web": {
-      "entry": ["index.html"],
+      "entry": ["index.html", "src/index.css"],
       "project": ["src/**/*.{ts,tsx}"]
     },
     "packages/shared": {
