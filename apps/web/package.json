@@ -1,0 +1,28 @@
+{
+  "name": "@applyai/web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@applyai/shared": "workspace:*",
+    "@preact/signals-react": "3.10.1",
+    "@react-pdf/renderer": "4.5.1",
+    "@tanstack/react-form": "1.32.1",
+    "@tanstack/react-query": "5.100.14",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.0",
+    "@types/react": "19.2.15",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "typescript": "6.0.3",
+    "vite": "8.0.14"
+  }
+}

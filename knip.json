@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "includeEntryExports": true,
+  "workspaces": {
+    "apps/api": {
+      "project": ["src/**/*.ts"]
+    },
+    "apps/web": {
+      "entry": ["index.html"],
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "packages/shared": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/db": {
+      "project": ["src/**/*.ts"]
+    }
+  }
+}

@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-canvas: light-dark(#f8f7f4, #0f172a);
+  --color-surface: light-dark(#ffffff, #1e293b);
+  --color-border: light-dark(#e8e6e1, #334155);
+  --color-muted: light-dark(#6b7280, #94a3b8);
+  --color-ink: light-dark(#1f2937, #f8fafc);
+  --color-primary: light-dark(#2563eb, #3b82f6);
+  --color-primary-soft: light-dark(#eff6ff, #1e3a5f);
+  --color-success: light-dark(#16a34a, #4ade80);
+  --color-success-soft: light-dark(#f0fdf4, #14532d);
+  --color-danger: light-dark(#dc2626, #f87171);
+  --color-danger-soft: light-dark(#fef2f2, #450a0a);
+  --color-neutral-soft: light-dark(#f3f4f6, #334155);
+  --color-warning-soft: light-dark(#fffbeb, #422006);
+  --color-warning-border: light-dark(#fde68a, #92400e);
+  --color-warning-text: light-dark(#92400e, #fde68a);
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}

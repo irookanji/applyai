@@ -1,0 +1,29 @@
+---
+description: Import ordering for JS/TS files in the monorepo
+globs: "**/*.{js,ts,jsx,tsx}"
+alwaysApply: false
+---
+
+# Import order
+
+Organize imports in this order (blank line between each group):
+
+1. **External** — npm packages, Bun/Node built-ins (`react`, `node:path`, `bun:test`, `drizzle-orm`, etc.)
+2. **Internal workspace** — `@applyai/*` packages (`@applyai/shared`, `@applyai/db`, …)
+3. **Project-relative** — local files (`./`, `../`), CSS, assets
+
+Use `import type` for type-only imports. Run `bun run lint:fix` to auto-sort via Biome.
+
+Example:
+
+```typescript
+import { Hono } from 'hono';
+import { describe, expect, it } from 'bun:test';
+
+import type { ApplicationRow } from '@applyai/db';
+import type { ApplicationStatus } from '@applyai/shared';
+
+import { createMockDb } from './mock-db';
+```
+
+Enforced in root `biome.json` → `assist.actions.source.organizeImports.options.groups`.

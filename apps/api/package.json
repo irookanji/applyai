@@ -1,0 +1,21 @@
+{
+  "name": "@applyai/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.98.0",
+    "@applyai/db": "workspace:*",
+    "@applyai/shared": "workspace:*",
+    "@mozilla/readability": "0.6.0",
+    "drizzle-orm": "0.45.2",
+    "hono": "4.12.23",
+    "linkedom": "0.18.12",
+    "pdf-parse": "2.4.5"
+  }
+}

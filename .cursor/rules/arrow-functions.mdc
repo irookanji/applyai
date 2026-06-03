@@ -1,0 +1,35 @@
+---
+description: Prefer arrow functions for functions and React components
+globs: "**/*.{js,ts,jsx,tsx}"
+alwaysApply: false
+---
+
+# Arrow functions
+
+Use arrow functions for new and refactored code:
+
+- React components: `export const MyComponent = (props: Props) => { ... }`
+- Module helpers: `export const mapRow = (row: Row): Dto => { ... }`
+- Callbacks, hooks, and inline handlers: always arrows
+
+```typescript
+// Prefer
+export const HistoryPage = ({ onReapply }: HistoryPageProps) => {
+  return <div>...</div>;
+};
+
+export const buildJobHash = (company: string, title: string, url?: string | null) =>
+  normalizeJobHash(company, title, url);
+
+// Avoid for new code
+export function HistoryPage() { ... }
+function mapRow(row: Row) { ... }
+```
+
+Exceptions (keep `function`):
+
+- Generators (`function*`)
+- Code that needs `this` binding or `arguments`
+- Named recursion where a hoisted declaration is clearer (rare)
+
+Biome's `useArrowFunction` only auto-fixes **function expressions**, not top-level `export function` declarations - this rule guides AI and reviews.

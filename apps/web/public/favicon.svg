@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="CV">
+  <rect width="32" height="32" rx="8" fill="#2563eb" />
+  <text
+    x="16"
+    y="21"
+    text-anchor="middle"
+    fill="#ffffff"
+    font-family="Inter, system-ui, sans-serif"
+    font-size="11"
+    font-weight="700"
+  >
+    CV
+  </text>
+</svg>
