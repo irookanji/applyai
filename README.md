@@ -1,5 +1,7 @@
 # ApplyAI
 
+[![CI](https://github.com/irookanji/applyai/actions/workflows/ci.yml/badge.svg)](https://github.com/irookanji/applyai/actions/workflows/ci.yml)
+
 AI-powered job application assistant that tailors your CV, drafts cover letters, and tracks every application in one place.
 
 ## Features
@@ -135,6 +137,18 @@ Current coverage:
 | `packages/shared` | Zod schemas, date/hash helpers |
 | `apps/api` | Health route, job parser, applications service |
 
+## CI
+
+GitHub Actions runs on every push and pull request to `main` (see [.github/workflows/ci.yml](.github/workflows/ci.yml)):
+
+1. `bun install --frozen-lockfile`
+2. `bun run lint` — Biome
+3. `bun test apps packages` — Bun test runner
+4. `bun run build` — TypeScript + Vite production build
+5. `bun run knip` — unused code and dependencies
+
+Run the same pipeline locally: `bun run ci`
+
 ## Scripts
 
 ```bash
@@ -145,6 +159,7 @@ bun run build        # Production web build
 bun run db:up        # Start PostgreSQL (Docker)
 bun run db:generate  # Generate Drizzle migration
 bun run db:migrate   # Apply migrations
+bun run ci           # Same checks as GitHub Actions (lint, test, build, knip)
 bun run lint         # Biome lint + format check
 bun run lint:fix     # Biome auto-fix (includes import sorting)
 bun run format       # Biome format

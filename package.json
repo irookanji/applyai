@@ -16,6 +16,7 @@
     "dev:api": "bun run --filter @applyai/api dev",
     "dev:web": "bun run --filter @applyai/web dev",
     "build": "bun run --filter @applyai/web build",
+    "ci": "bun run lint && bun test apps packages && bun run build && bun run knip",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
