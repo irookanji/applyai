@@ -8,7 +8,7 @@ AI-powered job application assistant that tailors your CV, drafts cover letters,
 
 - Paste a vacancy URL or job description — ApplyAI parses the posting
 - Upload your master CV PDF — AI extracts text and tailors it per role
-- Generate a role-specific cover letter via Anthropic Claude
+- Generate a role-specific cover letter via Google Gemini
 - Track application history with status labels (Applied, Interview, Rejected, No response)
 - Filter and search past applications
 - Duplicate detection warns if you already applied to the same role
@@ -21,7 +21,7 @@ AI-powered job application assistant that tailors your CV, drafts cover letters,
 | Frontend | React 19, Vite, Tailwind CSS v4, TanStack Query, TanStack Form, Preact Signals |
 | Backend | Hono on Bun |
 | Database | PostgreSQL + Drizzle ORM |
-| AI | Anthropic API (`claude-sonnet-4-20250514`) |
+| AI | Google Gemini API (`gemini-2.5-flash-lite`, free tier via AI Studio) |
 | Tooling | Biome (lint/format), Knip, [Bun test](https://bun.com/docs/test) |
 | Infra | Docker Compose |
 
@@ -44,7 +44,7 @@ applyAI/
 
 ```bash
 cp .env.example .env
-# Add your ANTHROPIC_API_KEY to .env
+# Add your GEMINI_API_KEY from https://aistudio.google.com to .env
 ```
 
 ### 2. Start PostgreSQL
@@ -103,7 +103,7 @@ docker compose up --build
 
 ## AI prompt design
 
-The Anthropic service acts as a career coach with strict rules:
+The Gemini service acts as a career coach with strict rules:
 
 - Never invent experience not present in the uploaded CV
 - Reframe existing skills toward the job requirements
@@ -114,7 +114,8 @@ The Anthropic service acts as a career coach with strict rules:
 | Variable | Description |
 |----------|-------------|
 | `DATABASE_URL` | PostgreSQL connection string |
-| `ANTHROPIC_API_KEY` | Anthropic API key |
+| `GEMINI_API_KEY` | Google AI Studio API key |
+| `GEMINI_MODEL` | Gemini model id (default `gemini-2.5-flash-lite`; try `gemini-2.5-flash` for higher quality) |
 | `CORS_ORIGIN` | Allowed frontend origin (default `http://localhost:5173`) |
 | `UPLOADS_DIR` | Directory for uploaded CV PDFs |
 | `PORT` | API port (default `3000`) |

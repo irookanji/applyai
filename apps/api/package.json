@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --watch src/index.ts",
-    "start": "bun src/index.ts",
+    "dev": "bun --watch --env-file=../../.env src/index.ts",
+    "start": "bun --env-file=../../.env src/index.ts",
     "test": "bun test"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.98.0",
+    "@google/generative-ai": "0.24.1",
     "@applyai/db": "workspace:*",
     "@applyai/shared": "workspace:*",
     "@mozilla/readability": "0.6.0",

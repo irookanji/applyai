@@ -1,3 +1,5 @@
+import './load-env';
+
 import { createDb } from '@applyai/db';
 
 import { createApp } from './app';

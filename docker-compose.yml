@@ -21,7 +21,8 @@ services:
       dockerfile: apps/api/Dockerfile
     environment:
       DATABASE_URL: postgresql://applyai:applyai@postgres:5432/applyai
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash-lite}
       CORS_ORIGIN: http://localhost:5173
       UPLOADS_DIR: /app/uploads
       PORT: 3000

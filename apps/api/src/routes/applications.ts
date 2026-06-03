@@ -7,7 +7,6 @@ import {
   updateApplicationRequestSchema,
 } from '@applyai/shared';
 
-import { generateApplicationContent } from '../services/anthropic';
 import {
   buildJobHash,
   createApplication,
@@ -16,6 +15,7 @@ import {
   updateApplication,
 } from '../services/applications';
 import { findDuplicateApplication } from '../services/duplicate';
+import { generateApplicationContent } from '../services/gemini';
 import { extractJobHints, resolveJobDescription } from '../services/job-parser';
 import { getMasterCv, resolveCvText, saveMasterCv } from '../services/master-cv';
 import type { AppEnv } from '../types';
