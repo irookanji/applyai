@@ -18,10 +18,10 @@ AI-powered job application assistant that tailors your CV, drafts cover letters,
 
 | Layer | Tech |
 |-------|------|
-| Frontend | React 19, Vite, Tailwind CSS v4, TanStack Query, TanStack Form, Preact Signals |
-| Backend | Hono on Bun |
-| Database | PostgreSQL + Drizzle ORM |
-| AI | Google Gemini API (`gemini-2.5-flash-lite`, free tier via AI Studio) |
+| Frontend | React 19, Vite, Tailwind v4 — [apps/web/README.md](apps/web/README.md) |
+| Backend | Hono on Bun — [apps/api/README.md](apps/api/README.md) |
+| Database | PostgreSQL + Drizzle ORM (`packages/db`) |
+| AI | Google Gemini (API service in `apps/api`) |
 | Tooling | Biome (lint/format), Knip, [Bun test](https://bun.com/docs/test) |
 | Infra | Docker Compose |
 
@@ -30,8 +30,8 @@ AI-powered job application assistant that tailors your CV, drafts cover letters,
 ```
 applyAI/
 ├── apps/
-│   ├── api/          # Hono REST API
-│   └── web/          # React SPA
+│   ├── api/          # Hono REST API — see [apps/api/README.md](apps/api/README.md)
+│   └── web/          # React SPA — see [apps/web/README.md](apps/web/README.md)
 ├── packages/
 │   ├── db/           # Drizzle schema & migrations
 │   └── shared/       # Zod schemas & shared types
@@ -70,55 +70,13 @@ bun run dev:api
 bun run dev:web
 ```
 
-Open [http://localhost:5173](http://localhost:5173). The Vite dev server proxies `/api` to the Hono API on port 3000.
+Open [http://localhost:5173](http://localhost:5173) ([web docs](apps/web/README.md)). Vite proxies `/api` to port 3000 ([API docs](apps/api/README.md)).
 
 ### Docker (full stack)
 
 ```bash
 docker compose up --build
 ```
-
-## UX flow
-
-1. **History** is the default screen - stats, searchable list, detail panel
-2. **New application** wizard:
-   - Step 1: Input (URL or description + CV PDF)
-   - Step 2: AI generation
-   - Step 3: Review & save
-3. After saving, the app returns to History with the new entry selected
-
-## API endpoints
-
-| Method | Route | Description |
-|--------|-------|-------------|
-| GET | `/health` | Health check |
-| GET | `/applications` | List with filters & stats |
-| GET | `/applications/:id` | Application detail |
-| PATCH | `/applications/:id` | Update status / notes |
-| POST | `/applications/check-duplicate` | Duplicate pre-check |
-| POST | `/applications/generate` | AI generation pipeline |
-| POST | `/applications` | Save application |
-| GET | `/cv/master` | Master CV metadata |
-| POST | `/cv/master` | Upload master CV PDF |
-
-## AI prompt design
-
-The Gemini service acts as a career coach with strict rules:
-
-- Never invent experience not present in the uploaded CV
-- Reframe existing skills toward the job requirements
-- Return structured JSON: company, title, match score, tailored CV bullets, cover letter, key requirements
-
-## Environment variables
-
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `GEMINI_API_KEY` | Google AI Studio API key |
-| `GEMINI_MODEL` | Gemini model id (default `gemini-2.5-flash-lite`; try `gemini-2.5-flash` for higher quality) |
-| `CORS_ORIGIN` | Allowed frontend origin (default `http://localhost:5173`) |
-| `UPLOADS_DIR` | Directory for uploaded CV PDFs |
-| `PORT` | API port (default `3000`) |
 
 ## Testing
 
@@ -127,16 +85,11 @@ Tests use Bun's built-in Jest-compatible runner ([docs](https://bun.com/docs/tes
 ```bash
 bun run test           # All tests in apps/ and packages/
 bun run test:watch     # Watch mode
-bun run test:api       # API tests only
+bun run test:api       # API only — see [apps/api/README.md](apps/api/README.md)
 bun run test:shared    # Shared package tests only
 ```
 
-Current coverage:
-
-| Workspace | Tests |
-|-----------|-------|
-| `packages/shared` | Zod schemas, date/hash helpers |
-| `apps/api` | Health route, job parser, applications service |
+Per-workspace docs: [apps/web/README.md](apps/web/README.md) (UX flow) · [apps/api/README.md](apps/api/README.md) (tests) · `packages/shared` (Zod schemas, date/hash helpers)
 
 ## CI
 
@@ -149,25 +102,6 @@ GitHub Actions runs on every push and pull request to `main` (see [.github/workf
 5. `bun run knip` — unused code and dependencies
 
 Run the same pipeline locally: `bun run ci`
-
-## Scripts
-
-```bash
-bun run dev          # API + web concurrently
-bun run dev:api      # API only
-bun run dev:web      # Web only
-bun run build        # Production web build
-bun run db:up        # Start PostgreSQL (Docker)
-bun run db:generate  # Generate Drizzle migration
-bun run db:migrate   # Apply migrations
-bun run ci           # Same checks as GitHub Actions (lint, test, build, knip)
-bun run lint         # Biome lint + format check
-bun run lint:fix     # Biome auto-fix (includes import sorting)
-bun run format       # Biome format
-bun run test         # Run all tests
-bun run test:watch   # Tests in watch mode
-bun run knip         # Scan for unused exports, deps, files
-```
 
 ## Portfolio notes
 
