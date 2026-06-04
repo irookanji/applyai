@@ -1,4 +1,6 @@
 {
+  "typescript.tsdk": "apps/web/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
   "less.lint.unknownAtRules": "ignore"
