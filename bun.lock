@@ -5,11 +5,11 @@
     "": {
       "name": "applyai",
       "devDependencies": {
-        "@biomejs/biome": "2.4.16",
-        "@types/bun": "1.3.14",
-        "husky": "9.1.7",
-        "knip": "6.14.2",
-        "lint-staged": "17.0.5",
+        "@biomejs/biome": "latest",
+        "@types/bun": "latest",
+        "husky": "latest",
+        "knip": "latest",
+        "lint-staged": "latest",
       },
     },
     "apps/api": {
@@ -18,12 +18,12 @@
       "dependencies": {
         "@applyai/db": "workspace:*",
         "@applyai/shared": "workspace:*",
-        "@google/generative-ai": "latest",
-        "@mozilla/readability": "latest",
-        "drizzle-orm": "latest",
-        "hono": "latest",
-        "linkedom": "latest",
-        "pdf-parse": "latest",
+        "@google/generative-ai": "0.24.1",
+        "@mozilla/readability": "0.6.0",
+        "drizzle-orm": "0.45.2",
+        "hono": "4.12.23",
+        "linkedom": "0.18.12",
+        "pdf-parse": "2.4.5",
       },
     },
     "apps/web": {
@@ -556,7 +556,7 @@
 
     "linkedom": ["linkedom@0.18.12", "", { "dependencies": { "css-select": "^5.1.0", "cssom": "^0.5.0", "html-escaper": "^3.0.3", "htmlparser2": "^10.0.0", "uhyphen": "^0.2.0" }, "peerDependencies": { "canvas": ">= 2" }, "optionalPeers": ["canvas"] }, "sha512-jalJsOwIKuQJSeTvsgzPe9iJzyfVaEJiEXl+25EkKevsULHvMJzpNqwvj1jOESWdmgKDiXObyjOYwlUqG7wo1Q=="],
 
-    "lint-staged": ["lint-staged@17.0.5", "", { "dependencies": { "listr2": "^10.2.1", "picomatch": "^4.0.4", "string-argv": "^0.3.2", "tinyexec": "^1.1.2" }, "optionalDependencies": { "yaml": "^2.8.4" }, "bin": { "lint-staged": "bin/lint-staged.js" } }, "sha512-d12yC+/e8RhBjZtaxZn71FyrgU/P5e+uAPifhCLwdosQZP/zamSdKRWDC30ocVIbzDKiFG1McHc/LUgB92GIPw=="],
+    "lint-staged": ["lint-staged@17.0.6", "", { "dependencies": { "listr2": "^10.2.1", "picomatch": "^4.0.4", "string-argv": "^0.3.2", "tinyexec": "1.2.2" }, "optionalDependencies": { "yaml": "^2.9.0" }, "bin": { "lint-staged": "bin/lint-staged.js" } }, "sha512-xTowloQX5tfs9TC6SUHnKuBSx/TUx+9w39zRTbVrB70DxUJZh3OZWnOa0LbejxVX9adYuioGJoP4dpQ04QHehg=="],
 
     "listr2": ["listr2@10.2.1", "", { "dependencies": { "cli-truncate": "^5.2.0", "eventemitter3": "^5.0.4", "log-update": "^6.1.0", "rfdc": "^1.4.1", "wrap-ansi": "^10.0.0" } }, "sha512-7I5knELsJKTUjXG+A6BkKAiGkW1i25fNa/xlUl9hFtk15WbE9jndA89xu5FzQKrY5llajE1hfZZFMILXkDHk/Q=="],
 
