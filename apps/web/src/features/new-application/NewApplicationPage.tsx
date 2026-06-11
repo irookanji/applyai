@@ -30,7 +30,7 @@ export function NewApplicationPage({ reapplySeed }: NewApplicationPageProps) {
 
   return (
     <div className="py-2">
-      {step === 1 ? (
+      {step === 1 && (
         <StepInput
           initialValues={reapplySeed ?? undefined}
           onContinue={(values) => {
@@ -39,9 +39,9 @@ export function NewApplicationPage({ reapplySeed }: NewApplicationPageProps) {
             wizardStep$.value = 2;
           }}
         />
-      ) : null}
+      )}
 
-      {step === 2 && input ? (
+      {step === 2 && input && (
         <StepGenerating
           input={input}
           onComplete={(result) => {
@@ -51,15 +51,15 @@ export function NewApplicationPage({ reapplySeed }: NewApplicationPageProps) {
             setGenerationError(message);
           }}
         />
-      ) : null}
+      )}
 
-      {generationError ? (
+      {generationError && (
         <div className="mx-auto mt-4 max-w-2xl rounded-xl border border-red-200 bg-danger-soft px-4 py-3 text-sm text-danger">
           {generationError}
         </div>
-      ) : null}
+      )}
 
-      {step === 3 && preview ? (
+      {step === 3 && preview && (
         <StepReview
           preview={preview}
           onSaved={() => {
@@ -67,7 +67,7 @@ export function NewApplicationPage({ reapplySeed }: NewApplicationPageProps) {
             setInput(null);
           }}
         />
-      ) : null}
+      )}
     </div>
   );
 }
