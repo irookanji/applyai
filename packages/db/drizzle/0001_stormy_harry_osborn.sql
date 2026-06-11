@@ -1,0 +1,1 @@
+ALTER TABLE "applications" ADD COLUMN "applicant_name" text DEFAULT '' NOT NULL;

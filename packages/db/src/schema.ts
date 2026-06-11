@@ -19,6 +19,7 @@ export const applications = pgTable('applications', {
   cvSent: text('cv_sent').notNull(),
   coverLetter: text('cover_letter').notNull(),
   notes: text('notes').notNull().default(''),
+  applicantName: text('applicant_name').notNull().default(''),
   masterCvText: text('master_cv_text').notNull().default(''),
   appliedAt: timestamp('applied_at', { withTimezone: true }).notNull().defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

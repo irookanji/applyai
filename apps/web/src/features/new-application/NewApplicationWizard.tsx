@@ -260,6 +260,7 @@ export function StepReview({ preview, onSaved }: StepReviewProps) {
         matchScore: preview.matchScore,
         cvSent,
         coverLetter,
+        applicantName: preview.applicantName,
         masterCvText: preview.masterCvText,
         status: 'applied',
       }),
@@ -288,7 +289,7 @@ export function StepReview({ preview, onSaved }: StepReviewProps) {
         />
       ) : null}
 
-      <TextAreaField label="Tailored CV" value={cvSent} onChange={setCvSent} rows={12} />
+      <TextAreaField label="Tailored CV" value={cvSent} onChange={setCvSent} rows={24} />
       <TextAreaField label="Cover letter" value={coverLetter} onChange={setCoverLetter} rows={12} />
 
       {preview.keyRequirements.length ? (

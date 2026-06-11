@@ -129,14 +129,14 @@ export function ApplicationDetail({ application, onReapply }: ApplicationDetailP
       </div>
 
       <div className="space-y-3">
-        <TextAreaField label="CV sent" value={cvSent} onChange={setCvSent} />
+        <TextAreaField label="CV sent" value={cvSent} onChange={setCvSent} rows={24} />
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => void handleCopy(cvSent, 'CV')}>Copy</Button>
           <Button
             onClick={() =>
               void downloadCvPdf({
-                companyName: application.companyName,
-                jobTitle: application.jobTitle,
+                applicantName: application.applicantName,
+                masterCvText: application.masterCvText,
                 cvText: cvSent,
               })
             }

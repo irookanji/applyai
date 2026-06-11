@@ -3,6 +3,7 @@
   "includeEntryExports": true,
   "workspaces": {
     "apps/api": {
+      "entry": ["src/**/*.test.ts"],
       "project": ["src/**/*.ts"]
     },
     "apps/web": {
@@ -10,6 +11,7 @@
       "project": ["src/**/*.{ts,tsx}"]
     },
     "packages/shared": {
+      "entry": ["src/**/*.test.ts"],
       "project": ["src/**/*.ts"]
     },
     "packages/db": {

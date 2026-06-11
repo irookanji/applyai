@@ -33,6 +33,7 @@ describe('mapApplicationRow', () => {
       cvSent: 'Tailored CV bullets',
       coverLetter: 'Dear team',
       notes: 'Follow up next week',
+      applicantName: 'John Doe',
       masterCvText: 'Original CV text',
       appliedAt: appliedAt.toISOString(),
       createdAt: appliedAt.toISOString(),
@@ -121,6 +122,7 @@ describe('createApplication', () => {
       matchScore: 88,
       cvSent: 'CV text',
       coverLetter: 'Cover letter text',
+      applicantName: 'John Doe',
       masterCvText: 'Master CV text',
     });
 

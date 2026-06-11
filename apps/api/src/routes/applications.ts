@@ -16,7 +16,7 @@ import {
 } from '../services/applications';
 import { findDuplicateApplication } from '../services/duplicate';
 import { generateApplicationContent } from '../services/gemini';
-import { extractJobHints, resolveJobDescription } from '../services/job-parser';
+import { extractJobHints, resolveJob } from '../services/job-parser';
 import { getMasterCv, resolveCvText, saveMasterCv } from '../services/master-cv';
 import type { AppEnv } from '../types';
 
@@ -53,10 +53,14 @@ applicationsRouter.post('/generate', async (c) => {
   const jobDescriptionInput = formData.get('jobDescription')?.toString() ?? null;
   const cvFile = formData.get('cvFile');
 
-  const jobDescription = await resolveJobDescription(jobUrl, jobDescriptionInput);
+  const parsedJob = await resolveJob(jobUrl, jobDescriptionInput);
   const cvText = await resolveCvText(c.get('db'), cvFile instanceof File ? cvFile : null);
 
-  const aiResult = await generateApplicationContent(jobDescription, cvText);
+  const aiResult = await generateApplicationContent(parsedJob.description, cvText, {
+    jobTitle: parsedJob.jobTitle,
+    companyName: parsedJob.companyName,
+    jobUrl,
+  });
   const jobHash = buildJobHash(aiResult.companyName, aiResult.jobTitle, jobUrl);
 
   const existing = await findDuplicateApplication(c.get('db'), {
@@ -69,13 +73,14 @@ applicationsRouter.post('/generate', async (c) => {
   return c.json({
     companyName: aiResult.companyName,
     jobTitle: aiResult.jobTitle,
-    jobDescription,
+    jobDescription: parsedJob.description,
     jobUrl,
     jobHash,
     matchScore: aiResult.matchScore,
     tailoredCv: aiResult.tailoredCv,
     coverLetter: aiResult.coverLetter,
     keyRequirements: aiResult.keyRequirements,
+    applicantName: aiResult.applicantName,
     masterCvText: cvText,
     isDuplicate: Boolean(existing),
     existingApplication: existing,

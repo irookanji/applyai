@@ -32,6 +32,7 @@ const applicationSchema = z.object({
   cvSent: z.string(),
   coverLetter: z.string(),
   notes: z.string(),
+  applicantName: z.string(),
   masterCvText: z.string(),
   appliedAt: z.string().datetime(),
   createdAt: z.string().datetime(),
@@ -87,6 +88,7 @@ const generatePreviewSchema = z.object({
   tailoredCv: z.string(),
   coverLetter: z.string(),
   keyRequirements: z.array(z.string()),
+  applicantName: z.string(),
   masterCvText: z.string(),
   isDuplicate: z.boolean(),
   existingApplication: applicationSchema.nullable(),
@@ -103,6 +105,7 @@ export const createApplicationRequestSchema = z.object({
   matchScore: z.number().int().min(0).max(100),
   cvSent: z.string().min(1),
   coverLetter: z.string().min(1),
+  applicantName: z.string().min(1),
   masterCvText: z.string(),
   status: applicationStatusSchema.default('applied'),
 });
@@ -135,6 +138,11 @@ export const aiGenerationResultSchema = z.object({
   tailoredCv: z.string(),
   coverLetter: z.string(),
   keyRequirements: z.array(z.string()),
+  applicantName: z.string().min(1),
+});
+
+export const aiGenerationRawResultSchema = aiGenerationResultSchema.extend({
+  applicantName: z.string().optional(),
 });
 
 export type AiGenerationResult = Immutable<z.infer<typeof aiGenerationResultSchema>>;

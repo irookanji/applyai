@@ -18,6 +18,7 @@ export function mapApplicationRow(row: ApplicationRow): Application {
     cvSent: row.cvSent,
     coverLetter: row.coverLetter,
     notes: row.notes,
+    applicantName: row.applicantName,
     masterCvText: row.masterCvText,
     appliedAt: row.appliedAt.toISOString(),
     createdAt: row.createdAt.toISOString(),
@@ -96,6 +97,7 @@ export async function createApplication(
     matchScore: number;
     cvSent: string;
     coverLetter: string;
+    applicantName: string;
     masterCvText: string;
     status?: ApplicationStatus;
   },
@@ -111,6 +113,7 @@ export async function createApplication(
       matchScore: input.matchScore,
       cvSent: input.cvSent,
       coverLetter: input.coverLetter,
+      applicantName: input.applicantName,
       masterCvText: input.masterCvText,
       status: input.status ?? 'applied',
       appliedAt: new Date(),

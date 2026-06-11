@@ -18,6 +18,7 @@ export const createApplicationRow = (overrides: Partial<ApplicationRow> = {}): A
     cvSent: 'Tailored CV bullets',
     coverLetter: 'Dear team',
     notes: '',
+    applicantName: 'John Doe',
     masterCvText: 'Original CV text',
     appliedAt,
     createdAt: appliedAt,

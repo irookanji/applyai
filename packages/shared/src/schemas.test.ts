@@ -59,6 +59,7 @@ describe('createApplicationRequestSchema', () => {
       matchScore: 80,
       cvSent: 'Tailored CV',
       coverLetter: 'Dear hiring manager',
+      applicantName: 'John Doe',
       masterCvText: 'Original CV',
     });
 
