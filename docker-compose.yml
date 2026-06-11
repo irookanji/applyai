@@ -42,9 +42,13 @@ services:
       - '5173:5173'
     environment:
       API_PROXY_TARGET: http://api:3000
+    volumes:
+      - .:/app
+      - web_node_modules:/app/node_modules
     depends_on:
       - api
 
 volumes:
   postgres_data:
   uploads_data:
+  web_node_modules:

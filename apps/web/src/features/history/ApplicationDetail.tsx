@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import type { Application, ApplicationStatus } from '@applyai/shared';
+import type { Application, ApplicationStatus, ApplicationsListResponse } from '@applyai/shared';
 import { APPLICATION_STATUSES, formatApplicationDate, statusLabels } from '@applyai/shared';
 
 import { Badge, Button, TextAreaField } from '../../components/ui';
 import { api } from '../../lib/api';
 import { downloadCvPdf } from '../../lib/cv-pdf';
-import { copyToClipboard, debounce } from '../../lib/utils';
+import { copyToClipboard } from '../../lib/utils';
 
 type ApplicationDetailProps = {
   readonly application: Application;
@@ -16,16 +16,47 @@ type ApplicationDetailProps = {
 
 export function ApplicationDetail({ application, onReapply }: ApplicationDetailProps) {
   const queryClient = useQueryClient();
+  const applicationIdRef = useRef(application.id);
+  applicationIdRef.current = application.id;
+
   const [notes, setNotes] = useState(application.notes);
   const [cvSent, setCvSent] = useState(application.cvSent);
   const [coverLetter, setCoverLetter] = useState(application.coverLetter);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
 
+  // Reset local edits only when the user selects a different application.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: avoid overwriting in-progress note edits on cache updates
   useEffect(() => {
     setNotes(application.notes);
     setCvSent(application.cvSent);
     setCoverLetter(application.coverLetter);
-  }, [application]);
+  }, [application.id]);
+
+  const notesSaveTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (notesSaveTimerRef.current) {
+        clearTimeout(notesSaveTimerRef.current);
+      }
+    };
+  }, []);
+
+  function syncApplicationInCache(updated: Application) {
+    queryClient.setQueriesData(
+      { queryKey: ['applications'] },
+      (old: ApplicationsListResponse | undefined) => {
+        if (!old) {
+          return old;
+        }
+
+        return {
+          ...old,
+          applications: old.applications.map((app) => (app.id === updated.id ? updated : app)),
+        };
+      },
+    );
+  }
 
   const updateMutation = useMutation({
     mutationFn: (payload: {
@@ -33,19 +64,30 @@ export function ApplicationDetail({ application, onReapply }: ApplicationDetailP
       notes?: string;
       cvSent?: string;
       coverLetter?: string;
-    }) => api.updateApplication(application.id, payload),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['applications'] });
+    }) => api.updateApplication(applicationIdRef.current, payload),
+    onSuccess: (updated, variables) => {
+      if (variables.status !== undefined) {
+        void queryClient.invalidateQueries({ queryKey: ['applications'] });
+        return;
+      }
+
+      syncApplicationInCache(updated);
     },
   });
 
-  const debouncedSaveNotes = useMemo(
-    () =>
-      debounce((value: string) => {
-        updateMutation.mutate({ notes: value });
-      }, 500),
-    [updateMutation],
-  );
+  function handleNotesChange(value: string) {
+    setNotes(value);
+
+    if (notesSaveTimerRef.current) {
+      clearTimeout(notesSaveTimerRef.current);
+    }
+
+    notesSaveTimerRef.current = setTimeout(() => {
+      void api.updateApplication(applicationIdRef.current, { notes: value }).then((updated) => {
+        syncApplicationInCache(updated);
+      });
+    }, 500);
+  }
 
   async function handleCopy(text: string, label: string) {
     await copyToClipboard(text);
@@ -132,10 +174,7 @@ export function ApplicationDetail({ application, onReapply }: ApplicationDetailP
       <TextAreaField
         label="Your notes"
         value={notes}
-        onChange={(value) => {
-          setNotes(value);
-          debouncedSaveNotes(value);
-        }}
+        onChange={handleNotesChange}
         placeholder="They responded within 3 days..."
         rows={4}
       />

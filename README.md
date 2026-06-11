@@ -73,14 +73,17 @@ bun run db:up
 bun install
 bun run db:migrate
 
-# Terminal 1 — API
-bun run dev:api
+# One terminal — API + web (stops Docker api/web if still running from ./start.sh)
+bun run dev
 
-# Terminal 2 — Web
-bun run dev:web
+# Or split across two terminals:
+# bun run dev:api
+# bun run dev:web
 ```
 
 Open [http://localhost:5173](http://localhost:5173) ([web docs](apps/web/README.md)). Vite proxies `/api` to port 3000 ([API docs](apps/api/README.md)).
+
+If you previously ran `./start.sh`, stop it with `Ctrl+C` or run `bun run docker:stop-app` before local dev. `bun run dev` does this automatically.
 
 ## Testing
 
