@@ -40,29 +40,39 @@ applyAI/
 
 ## Quick start
 
-### 1. Clone and configure
+### Run with Docker (recommended)
+
+Only [Docker Desktop](https://www.docker.com/products/docker-desktop/) is required — no Bun install needed.
 
 ```bash
-cp .env.example .env
-# Add your GEMINI_API_KEY from https://aistudio.google.com to .env
+git clone https://github.com/irookanji/applyai.git
+cd applyai
+./start.sh
 ```
 
-### 2. Start PostgreSQL
+On first run, `start.sh` creates `.env` from `.env.example`. Add your `GEMINI_API_KEY` from [Google AI Studio](https://aistudio.google.com), then run `./start.sh` again.
+
+Open [http://localhost:5173](http://localhost:5173) when the containers are up. Stop with `Ctrl+C`.
+
+Equivalent without the helper script:
 
 ```bash
+cp .env.example .env   # add GEMINI_API_KEY
+docker compose up --build
+```
+
+### Local development
+
+For day-to-day coding, use Bun and run Postgres in Docker:
+
+**Prerequisites:** [Bun](https://bun.sh), [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+```bash
+cp .env.example .env   # add GEMINI_API_KEY
 bun run db:up
-```
-
-### 3. Install dependencies & migrate
-
-```bash
 bun install
 bun run db:migrate
-```
 
-### 4. Run locally
-
-```bash
 # Terminal 1 — API
 bun run dev:api
 
@@ -71,12 +81,6 @@ bun run dev:web
 ```
 
 Open [http://localhost:5173](http://localhost:5173) ([web docs](apps/web/README.md)). Vite proxies `/api` to port 3000 ([API docs](apps/api/README.md)).
-
-### Docker (full stack)
-
-```bash
-docker compose up --build
-```
 
 ## Testing
 
