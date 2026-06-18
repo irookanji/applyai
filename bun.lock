@@ -5,11 +5,11 @@
     "": {
       "name": "applyai",
       "devDependencies": {
-        "@biomejs/biome": "2.4.16",
-        "@types/bun": "1.3.14",
-        "husky": "9.1.7",
-        "knip": "6.16.1",
-        "lint-staged": "17.0.7",
+        "@biomejs/biome": "latest",
+        "@types/bun": "latest",
+        "husky": "latest",
+        "knip": "latest",
+        "lint-staged": "latest",
       },
     },
     "apps/api": {
@@ -18,12 +18,12 @@
       "dependencies": {
         "@applyai/db": "workspace:*",
         "@applyai/shared": "workspace:*",
-        "@google/generative-ai": "latest",
-        "@mozilla/readability": "latest",
-        "drizzle-orm": "latest",
-        "hono": "latest",
-        "linkedom": "latest",
-        "pdf-parse": "latest",
+        "@google/generative-ai": "0.24.1",
+        "@mozilla/readability": "0.6.0",
+        "drizzle-orm": "0.45.2",
+        "hono": "4.12.25",
+        "linkedom": "0.18.12",
+        "pdf-parse": "2.4.5",
       },
     },
     "apps/web": {
@@ -56,7 +56,7 @@
         "postgres": "3.4.9",
       },
       "devDependencies": {
-        "@types/node": "25.9.2",
+        "@types/node": "25.9.3",
         "drizzle-kit": "0.31.10",
       },
     },
@@ -397,7 +397,7 @@
 
     "@types/bun": ["@types/bun@1.3.14", "", { "dependencies": { "bun-types": "1.3.14" } }, "sha512-h1hFqFVcvAvD9j9K7ZW7vd82aSA+rTdznZa+5bwvCwqSB1jmmfLcbIWhOLx1/+boy/xmjgCs/OMUL8hRJSmnPw=="],
 
-    "@types/node": ["@types/node@25.9.2", "", { "dependencies": { "undici-types": ">=7.24.0 <7.24.7" } }, "sha512-G05zqtJhcDLb8uslf5EjCxXg9G1KQxiV8OS0R26IC//Eoyitzqe8z37I7cqvnZlrlSfgocQRfSn/AHBZJJFyGw=="],
+    "@types/node": ["@types/node@25.9.3", "", { "dependencies": { "undici-types": ">=7.24.0 <7.24.7" } }, "sha512-603BddQMv3pUcr4U2dhujk83N2tTDVr/34wII2B6bJy6g+8WD6yUb11jszNs0gdi4PesVWl7ABt8nYMVpnLUcg=="],
 
     "@types/react": ["@types/react@19.2.17", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw=="],
 
