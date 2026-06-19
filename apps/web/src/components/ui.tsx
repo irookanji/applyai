@@ -13,7 +13,12 @@ const variantClasses: Readonly<Record<ButtonVariant, string>> = {
   ghost: 'text-muted hover:bg-neutral-soft',
 };
 
-export function Button({ variant = 'secondary', className = '', children, ...props }: ButtonProps) {
+export const Button = ({
+  variant = 'secondary',
+  className = '',
+  children,
+  ...props
+}: ButtonProps) => {
   return (
     <button
       className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${variantClasses[variant]} ${className}`}
@@ -22,7 +27,7 @@ export function Button({ variant = 'secondary', className = '', children, ...pro
       {children}
     </button>
   );
-}
+};
 
 type BadgeProps = {
   readonly status: ApplicationStatus;
@@ -35,13 +40,13 @@ const badgeClasses: Readonly<Record<ApplicationStatus, string>> = {
   no_response: 'bg-neutral-soft text-muted',
 };
 
-export function Badge({ status }: BadgeProps) {
+export const Badge = ({ status }: BadgeProps) => {
   return (
     <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${badgeClasses[status]}`}>
       {statusLabels[status]}
     </span>
   );
-}
+};
 
 type CardProps = {
   readonly children: React.ReactNode;
@@ -50,7 +55,7 @@ type CardProps = {
   readonly onClick?: () => void;
 };
 
-export function Card({ children, className = '', selected = false, onClick }: CardProps) {
+export const Card = ({ children, className = '', selected = false, onClick }: CardProps) => {
   const cardClassName = `rounded-2xl border bg-surface p-4 text-left transition ${selected ? 'border-primary bg-primary-soft shadow-sm' : 'border-border hover:border-primary/40'} ${onClick ? 'cursor-pointer' : ''} ${className}`;
 
   if (onClick) {
@@ -62,7 +67,7 @@ export function Card({ children, className = '', selected = false, onClick }: Ca
   }
 
   return <div className={cardClassName}>{children}</div>;
-}
+};
 
 type FilterPillProps = {
   readonly label: string;
@@ -70,7 +75,7 @@ type FilterPillProps = {
   readonly onClick: () => void;
 };
 
-export function FilterPill({ label, active, onClick }: FilterPillProps) {
+export const FilterPill = ({ label, active, onClick }: FilterPillProps) => {
   return (
     <button
       type="button"
@@ -82,7 +87,7 @@ export function FilterPill({ label, active, onClick }: FilterPillProps) {
       {label}
     </button>
   );
-}
+};
 
 type StatCardProps = {
   readonly label: string;
@@ -97,14 +102,14 @@ const toneClasses: Readonly<Record<NonNullable<StatCardProps['tone']>, string>> 
   muted: 'text-muted',
 };
 
-export function StatCard({ label, value, tone = 'default' }: StatCardProps) {
+export const StatCard = ({ label, value, tone = 'default' }: StatCardProps) => {
   return (
     <div className="rounded-2xl border border-border bg-surface px-5 py-4">
       <div className={`text-2xl font-semibold ${toneClasses[tone]}`}>{value}</div>
       <div className="text-sm text-muted">{label}</div>
     </div>
   );
-}
+};
 
 type TextAreaFieldProps = {
   readonly label: string;
@@ -114,13 +119,13 @@ type TextAreaFieldProps = {
   readonly rows?: number;
 };
 
-export function TextAreaField({
+export const TextAreaField = ({
   label,
   value,
   onChange,
   placeholder,
   rows = 8,
-}: TextAreaFieldProps) {
+}: TextAreaFieldProps) => {
   return (
     <label className="block space-y-2">
       <span className="text-xs font-semibold tracking-wide text-muted uppercase">{label}</span>
@@ -133,7 +138,7 @@ export function TextAreaField({
       />
     </label>
   );
-}
+};
 
 type InputFieldProps = {
   readonly label: string;
@@ -143,13 +148,13 @@ type InputFieldProps = {
   readonly type?: string;
 };
 
-export function InputField({
+export const InputField = ({
   label,
   value,
   onChange,
   placeholder,
   type = 'text',
-}: InputFieldProps) {
+}: InputFieldProps) => {
   return (
     <label className="block space-y-2">
       <span className="text-sm font-medium text-ink">{label}</span>
@@ -162,29 +167,75 @@ export function InputField({
       />
     </label>
   );
-}
+};
 
-export function ErrorBanner({ message }: { readonly message: string }) {
+export const ErrorBanner = ({ message }: { readonly message: string }) => {
   return (
     <div className="rounded-xl border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">
       {message}
     </div>
   );
-}
+};
 
-export function WarningBanner({ message }: { readonly message: string }) {
+export const WarningBanner = ({ message }: { readonly message: string }) => {
   return (
     <div className="rounded-xl border border-warning-border bg-warning-soft px-4 py-3 text-sm text-warning-text">
       {message}
     </div>
   );
-}
+};
 
-export function LoadingState({ message }: { readonly message: string }) {
+export const LoadingState = ({ message }: { readonly message: string }) => {
   return (
     <div className="flex min-h-64 flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-surface p-8 text-center">
       <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
       <p className="text-sm text-muted">{message}</p>
     </div>
   );
-}
+};
+
+type ToggleSwitchProps = {
+  readonly label: string;
+  readonly checked: boolean;
+  readonly onChange: (checked: boolean) => void;
+  readonly disabled?: boolean;
+  readonly description?: string;
+};
+
+export const ToggleSwitch = ({
+  label,
+  checked,
+  onChange,
+  disabled = false,
+  description,
+}: ToggleSwitchProps) => {
+  return (
+    <label
+      className={`flex items-start justify-between gap-4 rounded-xl border border-border bg-surface px-4 py-3 ${
+        disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+      }`}
+    >
+      <span className="space-y-1">
+        <span className="block text-sm font-medium text-ink">{label}</span>
+        {description ? <span className="block text-sm text-muted">{description}</span> : null}
+      </span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        disabled={disabled}
+        onClick={() => onChange(!checked)}
+        className={`relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition ${
+          checked ? 'bg-primary' : 'bg-neutral-soft'
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition ${
+            checked ? 'translate-x-5' : 'translate-x-0'
+          }`}
+        />
+      </button>
+    </label>
+  );
+};
