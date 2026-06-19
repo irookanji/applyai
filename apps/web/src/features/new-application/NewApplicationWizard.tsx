@@ -11,6 +11,7 @@ import {
   InputField,
   LoadingState,
   TextAreaField,
+  ToggleSwitch,
   WarningBanner,
 } from '../../components/ui';
 import { api } from '../../lib/api';
@@ -29,8 +30,9 @@ type StepOneProps = {
   }) => void;
 };
 
-export function StepInput({ initialValues, onContinue }: StepOneProps) {
+export const StepInput = ({ initialValues, onContinue }: StepOneProps) => {
   const [cvFile, setCvFile] = useState<File | null>(null);
+  const [useLastUploadedCv, setUseLastUploadedCv] = useState(true);
   const [duplicateMessage, setDuplicateMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -61,7 +63,9 @@ export function StepInput({ initialValues, onContinue }: StepOneProps) {
         return;
       }
 
-      if (!cvFile && !masterCv?.extractedText) {
+      const willUseStoredCv = useLastUploadedCv && Boolean(masterCv?.extractedText);
+
+      if (!willUseStoredCv && !cvFile) {
         setSubmitError('Upload your master CV PDF before generating.');
         return;
       }
@@ -74,8 +78,8 @@ export function StepInput({ initialValues, onContinue }: StepOneProps) {
         onContinue({
           jobUrl: value.jobUrl.trim(),
           jobDescription: value.jobDescription.trim(),
-          cvFile,
-          useStoredCv: !cvFile && Boolean(masterCv?.extractedText),
+          cvFile: willUseStoredCv ? null : cvFile,
+          useStoredCv: willUseStoredCv,
         });
       } catch (error) {
         setSubmitError(error instanceof Error ? error.message : 'Failed to continue');
@@ -152,22 +156,40 @@ export function StepInput({ initialValues, onContinue }: StepOneProps) {
         )}
       </form.Field>
 
-      <label className="block space-y-2">
-        <span className="text-sm font-medium text-ink">Master CV (PDF)</span>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={(event) => setCvFile(event.target.files?.[0] ?? null)}
-          className="block w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm"
+      <div className="space-y-3">
+        <div className="block space-y-2">
+          <span className="text-sm font-medium text-ink">Master CV (PDF)</span>
+          {useLastUploadedCv && masterCv?.extractedText ? (
+            <p className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-muted">
+              Using stored CV: {masterCv.filename}
+            </p>
+          ) : (
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(event) => setCvFile(event.target.files?.[0] ?? null)}
+              className="block w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm"
+            />
+          )}
+        </div>
+
+        <ToggleSwitch
+          label="Use last uploaded CV"
+          checked={useLastUploadedCv}
+          onChange={(checked) => {
+            setUseLastUploadedCv(checked);
+            if (checked) {
+              setCvFile(null);
+            }
+          }}
+          disabled={!masterCv?.extractedText}
+          description={
+            masterCv?.extractedText
+              ? `Stored CV: ${masterCv.filename}. Turn off to upload a different file.`
+              : 'Upload a CV first; it will be reused on future applications.'
+          }
         />
-        {masterCv ? (
-          <p className="text-sm text-muted">
-            Stored CV: {masterCv.filename}. Upload a new file to replace it.
-          </p>
-        ) : (
-          <p className="text-sm text-muted">Upload your master CV once; it will be reused later.</p>
-        )}
-      </label>
+      </div>
 
       {duplicateMessage ? <WarningBanner message={duplicateMessage} /> : null}
       {submitError ? <ErrorBanner message={submitError} /> : null}
@@ -188,7 +210,7 @@ export function StepInput({ initialValues, onContinue }: StepOneProps) {
       </div>
     </form>
   );
-}
+};
 
 type StepGeneratingProps = {
   readonly input: {
@@ -200,11 +222,11 @@ type StepGeneratingProps = {
   readonly onError: (message: string) => void;
 };
 
-export function StepGenerating({ input, onComplete, onError }: StepGeneratingProps) {
+export const StepGenerating = ({ input, onComplete, onError }: StepGeneratingProps) => {
   useEffect(() => {
     let cancelled = false;
 
-    async function runGeneration() {
+    const runGeneration = async () => {
       try {
         const formData = new FormData();
         if (input.jobUrl) formData.append('jobUrl', input.jobUrl);
@@ -222,7 +244,7 @@ export function StepGenerating({ input, onComplete, onError }: StepGeneratingPro
           wizardStep$.value = 1;
         }
       }
-    }
+    };
 
     void runGeneration();
 
@@ -236,14 +258,14 @@ export function StepGenerating({ input, onComplete, onError }: StepGeneratingPro
       <LoadingState message="Parsing the vacancy, reading your CV, and drafting tailored documents..." />
     </div>
   );
-}
+};
 
 type StepReviewProps = {
   readonly preview: GeneratePreview;
   readonly onSaved: (application: Application) => void;
 };
 
-export function StepReview({ preview, onSaved }: StepReviewProps) {
+export const StepReview = ({ preview, onSaved }: StepReviewProps) => {
   const queryClient = useQueryClient();
   const [cvSent, setCvSent] = useState(preview.tailoredCv);
   const [coverLetter, setCoverLetter] = useState(preview.coverLetter);
@@ -326,4 +348,4 @@ export function StepReview({ preview, onSaved }: StepReviewProps) {
       </div>
     </div>
   );
-}
+};
