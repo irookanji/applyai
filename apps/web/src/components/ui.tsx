@@ -56,7 +56,7 @@ type CardProps = {
 };
 
 export const Card = ({ children, className = '', selected = false, onClick }: CardProps) => {
-  const cardClassName = `rounded-2xl border bg-surface p-4 text-left transition ${selected ? 'border-primary bg-primary-soft shadow-sm' : 'border-border hover:border-primary/40'} ${onClick ? 'cursor-pointer' : ''} ${className}`;
+  const cardClassName = `w-full rounded-2xl border bg-surface p-4 text-left transition ${selected ? 'border-primary bg-primary-soft shadow-sm' : 'border-border hover:border-primary/40'} ${onClick ? 'cursor-pointer' : ''} ${className}`;
 
   if (onClick) {
     return (

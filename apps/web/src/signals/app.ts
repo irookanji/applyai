@@ -11,15 +11,15 @@ export const statusFilter$ = signal<'all' | 'applied' | 'interview' | 'rejected'
   'all',
 );
 
-export function openNewApplication() {
+export const openNewApplication = () => {
   mode$.value = 'newApplication';
   wizardStep$.value = 1;
-}
+};
 
-export function openHistory(selectedId?: string | null) {
+export const openHistory = (selectedId?: string | null) => {
   mode$.value = 'history';
   wizardStep$.value = 1;
   if (selectedId !== undefined) {
     selectedId$.value = selectedId;
   }
-}
+};

@@ -1,28 +1,26 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { Application, ApplicationStatus, ApplicationsListResponse } from '@applyai/shared';
+import type { Application } from '@applyai/shared';
 import { APPLICATION_STATUSES, formatApplicationDate, statusLabels } from '@applyai/shared';
 
-import { Badge, Button, TextAreaField } from '../../components/ui';
-import { api } from '../../lib/api';
-import { downloadCvPdf } from '../../lib/cv-pdf';
-import { copyToClipboard } from '../../lib/utils';
+import { useDebouncedNotesSave, useUpdateApplicationMutation } from './queries';
+import { Badge, Button, TextAreaField } from '@/components/ui';
+import { downloadCvPdf } from '@/lib/cv-pdf';
+import { copyToClipboard } from '@/lib/utils';
 
 type ApplicationDetailProps = {
   readonly application: Application;
   readonly onReapply: (application: Application) => void;
 };
 
-export function ApplicationDetail({ application, onReapply }: ApplicationDetailProps) {
-  const queryClient = useQueryClient();
-  const applicationIdRef = useRef(application.id);
-  applicationIdRef.current = application.id;
-
+export const ApplicationDetail = ({ application, onReapply }: ApplicationDetailProps) => {
   const [notes, setNotes] = useState(application.notes);
   const [cvSent, setCvSent] = useState(application.cvSent);
   const [coverLetter, setCoverLetter] = useState(application.coverLetter);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
+
+  const updateMutation = useUpdateApplicationMutation(application.id);
+  const saveNotesDebounced = useDebouncedNotesSave(application.id);
 
   // Reset local edits only when the user selects a different application.
   // biome-ignore lint/correctness/useExhaustiveDependencies: avoid overwriting in-progress note edits on cache updates
@@ -32,68 +30,16 @@ export function ApplicationDetail({ application, onReapply }: ApplicationDetailP
     setCoverLetter(application.coverLetter);
   }, [application.id]);
 
-  const notesSaveTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  useEffect(() => {
-    return () => {
-      if (notesSaveTimerRef.current) {
-        clearTimeout(notesSaveTimerRef.current);
-      }
-    };
-  }, []);
-
-  function syncApplicationInCache(updated: Application) {
-    queryClient.setQueriesData(
-      { queryKey: ['applications'] },
-      (old: ApplicationsListResponse | undefined) => {
-        if (!old) {
-          return old;
-        }
-
-        return {
-          ...old,
-          applications: old.applications.map((app) => (app.id === updated.id ? updated : app)),
-        };
-      },
-    );
-  }
-
-  const updateMutation = useMutation({
-    mutationFn: (payload: {
-      status?: ApplicationStatus;
-      notes?: string;
-      cvSent?: string;
-      coverLetter?: string;
-    }) => api.updateApplication(applicationIdRef.current, payload),
-    onSuccess: (updated, variables) => {
-      if (variables.status !== undefined) {
-        void queryClient.invalidateQueries({ queryKey: ['applications'] });
-        return;
-      }
-
-      syncApplicationInCache(updated);
-    },
-  });
-
-  function handleNotesChange(value: string) {
+  const handleNotesChange = (value: string) => {
     setNotes(value);
+    saveNotesDebounced(value);
+  };
 
-    if (notesSaveTimerRef.current) {
-      clearTimeout(notesSaveTimerRef.current);
-    }
-
-    notesSaveTimerRef.current = setTimeout(() => {
-      void api.updateApplication(applicationIdRef.current, { notes: value }).then((updated) => {
-        syncApplicationInCache(updated);
-      });
-    }, 500);
-  }
-
-  async function handleCopy(text: string, label: string) {
+  const handleCopy = async (text: string, label: string) => {
     await copyToClipboard(text);
     setCopyMessage(`${label} copied`);
     setTimeout(() => setCopyMessage(null), 2000);
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -182,4 +128,4 @@ export function ApplicationDetail({ application, onReapply }: ApplicationDetailP
       {copyMessage ? <p className="text-sm text-success">{copyMessage}</p> : null}
     </div>
   );
-}
+};

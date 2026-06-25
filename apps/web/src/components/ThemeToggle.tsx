@@ -1,7 +1,7 @@
 import { useSignals } from '@preact/signals-react/runtime';
 
-import { theme$, toggleTheme } from '../signals/theme';
 import { ThemeToggleIcon } from './ThemeToggleIcon';
+import { theme$, toggleTheme } from '@/signals/theme';
 
 export const ThemeToggle = () => {
   useSignals();

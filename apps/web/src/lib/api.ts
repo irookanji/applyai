@@ -11,7 +11,7 @@ import type {
 
 const API_BASE = '/api';
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(`${API_BASE}${path}`, init);
 
   if (!response.ok) {
@@ -24,7 +24,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
 
   return response.json() as Promise<T>;
-}
+};
 
 export const api = {
   getApplications(params?: { status?: string; search?: string }) {

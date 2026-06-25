@@ -1,16 +1,14 @@
 import { useSignals } from '@preact/signals-react/runtime';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 
 import type { Application } from '@applyai/shared';
 import { formatApplicationDate } from '@applyai/shared';
 
-import { SearchIcon } from '../../components/icons';
-import { Badge, Card, ErrorBanner, FilterPill, LoadingState, StatCard } from '../../components/ui';
-import { api } from '../../lib/api';
-import { debounce } from '../../lib/utils';
-import { searchQuery$, selectedId$, statusFilter$ } from '../../signals/app';
 import { ApplicationDetail } from './ApplicationDetail';
+import { useApplicationsListQuery } from './queries';
+import { SearchIcon } from '@/components/icons';
+import { Badge, Card, ErrorBanner, FilterPill, LoadingState, StatCard } from '@/components/ui';
+import { searchQuery$, selectedId$, statusFilter$ } from '@/signals/app';
 
 const filterOptions = [
   { id: 'all', label: 'All' },
@@ -24,27 +22,14 @@ type HistoryPageProps = {
   readonly onReapply: (application: Application) => void;
 };
 
-export function HistoryPage({ onReapply }: HistoryPageProps) {
+export const HistoryPage = ({ onReapply }: HistoryPageProps) => {
   useSignals();
 
   const statusFilter = statusFilter$.value;
   const searchQuery = searchQuery$.value;
   const selectedId = selectedId$.value;
-  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
-  const syncDebouncedSearch = useMemo(
-    () => debounce((value: string) => setDebouncedSearch(value), 500),
-    [],
-  );
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['applications', statusFilter, debouncedSearch],
-    queryFn: () =>
-      api.getApplications({
-        status: statusFilter,
-        search: debouncedSearch || undefined,
-      }),
-    placeholderData: keepPreviousData,
-  });
+  const { data, isLoading, isError, error } = useApplicationsListQuery(statusFilter, searchQuery);
 
   useEffect(() => {
     if (!data?.applications.length) {
@@ -86,9 +71,7 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
             <input
               value={searchQuery}
               onChange={(event) => {
-                const value = event.target.value;
-                searchQuery$.value = value;
-                syncDebouncedSearch(value);
+                searchQuery$.value = event.target.value;
               }}
               placeholder="Search company or role..."
               className="w-full rounded-xl border border-border bg-surface py-3 pr-4 pl-10 text-sm outline-none focus:border-primary"
@@ -122,14 +105,16 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
                   }}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-semibold">{application.companyName}</h3>
                       <p className="mt-1 text-sm text-muted">{application.jobTitle}</p>
                       <p className="mt-3 text-xs text-muted">
                         {formatApplicationDate(application.appliedAt)}
                       </p>
                     </div>
-                    <Badge status={application.status} />
+                    <span className="shrink-0">
+                      <Badge status={application.status} />
+                    </span>
                   </div>
                   <div className="mt-4 text-right text-sm font-medium text-primary">
                     {application.matchScore}% match
@@ -156,4 +141,4 @@ export function HistoryPage({ onReapply }: HistoryPageProps) {
       </div>
     </div>
   );
-}
+};

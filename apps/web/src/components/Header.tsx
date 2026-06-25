@@ -1,13 +1,12 @@
 import { useSignals } from '@preact/signals-react/runtime';
-import { useQuery } from '@tanstack/react-query';
 
-import { api } from '../lib/api';
-import { mode$, openHistory, openNewApplication } from '../signals/app';
 import { BriefcaseIcon } from './icons';
 import { ThemeToggle } from './ThemeToggle';
 import { Button } from './ui';
+import { useMasterCvQuery } from '@/lib/queries/master-cv';
+import { mode$, openHistory, openNewApplication } from '@/signals/app';
 
-export function Header() {
+export const Header = () => {
   useSignals();
   const mode = mode$.value;
 
@@ -42,13 +41,10 @@ export function Header() {
       </div>
     </header>
   );
-}
+};
 
-export function MasterCvBanner() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['master-cv'],
-    queryFn: () => api.getMasterCv(),
-  });
+export const MasterCvBanner = () => {
+  const { data, isLoading } = useMasterCvQuery();
 
   if (isLoading || data) {
     return null;
@@ -59,4 +55,4 @@ export function MasterCvBanner() {
       Upload your master CV PDF in the new application flow before generating tailored documents.
     </div>
   );
-}
+};

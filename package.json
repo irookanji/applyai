@@ -12,6 +12,7 @@
     "test:watch": "bun test --watch apps packages",
     "test:shared": "bun run --filter @applyai/shared test",
     "test:api": "bun run --filter @applyai/api test",
+    "test:web": "bun run --filter @applyai/web test",
     "dev": "docker compose stop api web 2>/dev/null || true; bun run --filter @applyai/api dev & bun run --filter @applyai/web dev",
     "dev:api": "docker compose stop api 2>/dev/null || true; bun run --filter @applyai/api dev",
     "dev:web": "docker compose stop web 2>/dev/null || true; bun run --filter @applyai/web dev",

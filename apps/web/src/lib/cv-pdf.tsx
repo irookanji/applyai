@@ -10,7 +10,7 @@ type DownloadCvPdfParams = {
   readonly cvText: string;
 };
 
-export async function downloadCvPdf(params: DownloadCvPdfParams) {
+export const downloadCvPdf = async (params: DownloadCvPdfParams) => {
   const applicantName = resolveApplicantName(params.applicantName, params.masterCvText);
   const blob = await pdf(<CvPdfDocument cvText={params.cvText} />).toBlob();
   const url = URL.createObjectURL(blob);
@@ -19,4 +19,4 @@ export async function downloadCvPdf(params: DownloadCvPdfParams) {
   anchor.download = `${applicantName.replace(/\s+/g, '-')}-cv.pdf`;
   anchor.click();
   URL.revokeObjectURL(url);
-}
+};

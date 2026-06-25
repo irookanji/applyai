@@ -3,12 +3,12 @@ import { useState } from 'react';
 
 import type { Application } from '@applyai/shared';
 
-import { Header, MasterCvBanner } from './components/Header';
-import { HistoryPage } from './features/history/HistoryPage';
-import { NewApplicationPage } from './features/new-application/NewApplicationPage';
-import { mode$, openNewApplication, wizardStep$ } from './signals/app';
+import { Header, MasterCvBanner } from '@/components/Header';
+import { HistoryPage } from '@/features/history/HistoryPage';
+import { NewApplicationPage } from '@/features/new-application/NewApplicationPage';
+import { mode$, openNewApplication, wizardStep$ } from '@/signals/app';
 
-export function App() {
+export const App = () => {
   useSignals();
   const mode = mode$.value;
   const [reapplySeed, setReapplySeed] = useState<{
@@ -16,14 +16,14 @@ export function App() {
     jobDescription?: string;
   } | null>(null);
 
-  function handleReapply(application: Application) {
+  const handleReapply = (application: Application) => {
     setReapplySeed({
       jobUrl: application.jobUrl ?? undefined,
       jobDescription: application.jobDescription,
     });
     wizardStep$.value = 1;
     openNewApplication();
-  }
+  };
 
   return (
     <div className="min-h-screen bg-canvas">
@@ -38,4 +38,4 @@ export function App() {
       </main>
     </div>
   );
-}
+};

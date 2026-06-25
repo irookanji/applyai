@@ -1,10 +1,16 @@
 import { useForm } from '@tanstack/react-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { Application, GeneratePreview } from '@applyai/shared';
 import { formatApplicationDate } from '@applyai/shared';
 
+import {
+  buildCreateApplicationRequest,
+  useCreateApplicationMutation,
+  useDuplicateCheckQuery,
+  useGenerateApplicationQuery,
+} from './queries';
+import type { GenerationInput, WizardContinueValues } from './types';
 import {
   Button,
   ErrorBanner,
@@ -13,42 +19,25 @@ import {
   TextAreaField,
   ToggleSwitch,
   WarningBanner,
-} from '../../components/ui';
-import { api } from '../../lib/api';
-import { openHistory, wizardStep$ } from '../../signals/app';
+} from '@/components/ui';
+import { useMasterCvQuery, useUploadMasterCvMutation } from '@/lib/queries/master-cv';
+import { openHistory, wizardStep$ } from '@/signals/app';
 
 type StepOneProps = {
   readonly initialValues?: {
     readonly jobUrl?: string;
     readonly jobDescription?: string;
   };
-  readonly onContinue: (values: {
-    readonly jobUrl: string;
-    readonly jobDescription: string;
-    readonly cvFile: File | null;
-    readonly useStoredCv: boolean;
-  }) => void;
+  readonly onContinue: (values: WizardContinueValues) => void;
 };
 
 export const StepInput = ({ initialValues, onContinue }: StepOneProps) => {
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [useLastUploadedCv, setUseLastUploadedCv] = useState(true);
-  const [duplicateMessage, setDuplicateMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const queryClient = useQueryClient();
-
-  const { data: masterCv } = useQuery({
-    queryKey: ['master-cv'],
-    queryFn: () => api.getMasterCv(),
-  });
-
-  const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadMasterCv(file),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['master-cv'] });
-    },
-  });
+  const { data: masterCv } = useMasterCvQuery();
+  const uploadMutation = useUploadMasterCvMutation();
 
   const form = useForm({
     defaultValues: {
@@ -87,36 +76,15 @@ export const StepInput = ({ initialValues, onContinue }: StepOneProps) => {
     },
   });
 
-  useEffect(() => {
-    const jobUrl = form.state.values.jobUrl.trim();
-    const jobDescription = form.state.values.jobDescription.trim();
+  const { data: duplicateCheck } = useDuplicateCheckQuery(
+    form.state.values.jobUrl,
+    form.state.values.jobDescription,
+  );
 
-    if (!jobUrl && jobDescription.length < 30) {
-      setDuplicateMessage(null);
-      return;
-    }
-
-    const timer = setTimeout(async () => {
-      try {
-        const result = await api.checkDuplicate({
-          jobUrl: jobUrl || undefined,
-          jobDescription: jobDescription || undefined,
-        });
-
-        if (result.isDuplicate && result.existingApplication) {
-          setDuplicateMessage(
-            `You already applied to ${result.existingApplication.companyName} — ${result.existingApplication.jobTitle} on ${formatApplicationDate(result.existingApplication.appliedAt)}.`,
-          );
-        } else {
-          setDuplicateMessage(null);
-        }
-      } catch {
-        setDuplicateMessage(null);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [form.state.values.jobUrl, form.state.values.jobDescription]);
+  const duplicateMessage =
+    duplicateCheck?.isDuplicate && duplicateCheck.existingApplication
+      ? `You already applied to ${duplicateCheck.existingApplication.companyName} — ${duplicateCheck.existingApplication.jobTitle} on ${formatApplicationDate(duplicateCheck.existingApplication.appliedAt)}.`
+      : null;
 
   return (
     <form
@@ -213,45 +181,36 @@ export const StepInput = ({ initialValues, onContinue }: StepOneProps) => {
 };
 
 type StepGeneratingProps = {
-  readonly input: {
-    readonly jobUrl: string;
-    readonly jobDescription: string;
-    readonly cvFile: File | null;
-  };
+  readonly input: GenerationInput;
   readonly onComplete: (preview: GeneratePreview) => void;
   readonly onError: (message: string) => void;
 };
 
 export const StepGenerating = ({ input, onComplete, onError }: StepGeneratingProps) => {
+  const onCompleteRef = useRef(onComplete);
+  const onErrorRef = useRef(onError);
+  onCompleteRef.current = onComplete;
+  onErrorRef.current = onError;
+
+  const { data, isError, error } = useGenerateApplicationQuery(input);
+
   useEffect(() => {
-    let cancelled = false;
+    if (!data) {
+      return;
+    }
 
-    const runGeneration = async () => {
-      try {
-        const formData = new FormData();
-        if (input.jobUrl) formData.append('jobUrl', input.jobUrl);
-        if (input.jobDescription) formData.append('jobDescription', input.jobDescription);
-        if (input.cvFile) formData.append('cvFile', input.cvFile);
+    onCompleteRef.current(data);
+    wizardStep$.value = 3;
+  }, [data]);
 
-        const preview = await api.generateApplication(formData);
-        if (!cancelled) {
-          onComplete(preview);
-          wizardStep$.value = 3;
-        }
-      } catch (error) {
-        if (!cancelled) {
-          onError(error instanceof Error ? error.message : 'Generation failed');
-          wizardStep$.value = 1;
-        }
-      }
-    };
+  useEffect(() => {
+    if (!isError) {
+      return;
+    }
 
-    void runGeneration();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [input, onComplete, onError]);
+    onErrorRef.current(error instanceof Error ? error.message : 'Generation failed');
+    wizardStep$.value = 1;
+  }, [isError, error]);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -266,35 +225,11 @@ type StepReviewProps = {
 };
 
 export const StepReview = ({ preview, onSaved }: StepReviewProps) => {
-  const queryClient = useQueryClient();
   const [cvSent, setCvSent] = useState(preview.tailoredCv);
   const [coverLetter, setCoverLetter] = useState(preview.coverLetter);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const saveMutation = useMutation({
-    mutationFn: () =>
-      api.createApplication({
-        companyName: preview.companyName,
-        jobTitle: preview.jobTitle,
-        jobDescription: preview.jobDescription,
-        jobUrl: preview.jobUrl,
-        jobHash: preview.jobHash,
-        matchScore: preview.matchScore,
-        cvSent,
-        coverLetter,
-        applicantName: preview.applicantName,
-        masterCvText: preview.masterCvText,
-        status: 'applied',
-      }),
-    onSuccess: async (application) => {
-      await queryClient.invalidateQueries({ queryKey: ['applications'] });
-      onSaved(application);
-      openHistory(application.id);
-    },
-    onError: (error) => {
-      setErrorMessage(error instanceof Error ? error.message : 'Failed to save application');
-    },
-  });
+  const saveMutation = useCreateApplicationMutation();
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -340,7 +275,19 @@ export const StepReview = ({ preview, onSaved }: StepReviewProps) => {
         </Button>
         <Button
           variant="primary"
-          onClick={() => saveMutation.mutate()}
+          onClick={() =>
+            saveMutation.mutate(buildCreateApplicationRequest(preview, cvSent, coverLetter), {
+              onSuccess: (application) => {
+                onSaved(application);
+                openHistory(application.id);
+              },
+              onError: (saveError) => {
+                setErrorMessage(
+                  saveError instanceof Error ? saveError.message : 'Failed to save application',
+                );
+              },
+            })
+          }
           disabled={saveMutation.isPending}
         >
           Save to history

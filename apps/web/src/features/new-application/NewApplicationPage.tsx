@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 import type { GeneratePreview } from '@applyai/shared';
 
-import { wizardStep$ } from '../../signals/app';
 import { StepGenerating, StepInput, StepReview } from './NewApplicationWizard';
+import { wizardStep$ } from '@/signals/app';
 
 type WizardInput = {
   jobUrl: string;
@@ -20,7 +20,7 @@ type NewApplicationPageProps = {
   } | null;
 };
 
-export function NewApplicationPage({ reapplySeed }: NewApplicationPageProps) {
+export const NewApplicationPage = ({ reapplySeed }: NewApplicationPageProps) => {
   useSignals();
 
   const step = wizardStep$.value;
@@ -70,4 +70,4 @@ export function NewApplicationPage({ reapplySeed }: NewApplicationPageProps) {
       )}
     </div>
   );
-}
+};
