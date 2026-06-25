@@ -12,7 +12,9 @@ describe('debounce', () => {
   });
 
   it('calls the function once after the delay when invoked repeatedly', () => {
-    const fn = mock(() => {});
+    const fn = mock((value: string) => {
+      void value;
+    });
     const debounced = debounce(fn, 100);
 
     debounced('first');

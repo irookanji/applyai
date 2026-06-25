@@ -40,6 +40,7 @@
       },
       "devDependencies": {
         "@tailwindcss/vite": "latest",
+        "@types/bun": "latest",
         "@types/react": "latest",
         "@types/react-dom": "latest",
         "@vitejs/plugin-react": "latest",
