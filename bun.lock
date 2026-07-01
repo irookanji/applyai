@@ -5,11 +5,11 @@
     "": {
       "name": "applyai",
       "devDependencies": {
-        "@biomejs/biome": "2.5.1",
-        "@types/bun": "1.3.14",
-        "husky": "9.1.7",
-        "knip": "6.18.0",
-        "lint-staged": "17.0.8",
+        "@biomejs/biome": "latest",
+        "@types/bun": "latest",
+        "husky": "latest",
+        "knip": "latest",
+        "lint-staged": "latest",
       },
     },
     "apps/api": {
@@ -53,12 +53,12 @@
       "name": "@applyai/db",
       "version": "0.0.1",
       "dependencies": {
-        "drizzle-orm": "latest",
-        "postgres": "latest",
+        "drizzle-orm": "0.45.2",
+        "postgres": "3.4.9",
       },
       "devDependencies": {
-        "@types/node": "latest",
-        "drizzle-kit": "latest",
+        "@types/node": "26.0.0",
+        "drizzle-kit": "0.31.10",
       },
     },
     "packages/shared": {
@@ -526,7 +526,7 @@
 
     "js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
 
-    "knip": ["knip@6.18.0", "", { "dependencies": { "fdir": "^6.5.0", "formatly": "^0.3.0", "get-tsconfig": "4.14.0", "jiti": "^2.7.0", "oxc-parser": "^0.137.0", "oxc-resolver": "11.21.3", "picomatch": "^4.0.4", "smol-toml": "^1.6.1", "strip-json-comments": "5.0.3", "tinyglobby": "^0.2.17", "unbash": "^4.0.1", "yaml": "^2.9.0", "zod": "^4.1.11" }, "bin": { "knip": "bin/knip.js", "knip-bun": "bin/knip-bun.js" } }, "sha512-RlT6fK3epETsEUCVdlz96CiJN3DQJwuxOuQhEeAVWjNRuAUJHWwe+XolTL8vIiwLPZ38tTdPWJUgZyTdskOEog=="],
+    "knip": ["knip@6.19.0", "", { "dependencies": { "fdir": "^6.5.0", "formatly": "^0.3.0", "get-tsconfig": "4.14.0", "jiti": "^2.7.0", "oxc-parser": "^0.137.0", "oxc-resolver": "11.21.3", "picomatch": "^4.0.4", "smol-toml": "^1.6.1", "strip-json-comments": "5.0.3", "tinyglobby": "^0.2.17", "unbash": "^4.0.1", "yaml": "^2.9.0", "zod": "^4.1.11" }, "bin": { "knip": "bin/knip.js", "knip-bun": "bin/knip-bun.js" } }, "sha512-3fTNO6c65tlwVFjL7u40Ommrjj6c5B47Kh3Zcw5Ije3K/ZXQsmAxiErMIWdR60h7hPV9dxDuuHP17VqmfMMLMQ=="],
 
     "lightningcss": ["lightningcss@1.32.0", "", { "dependencies": { "detect-libc": "^2.0.3" }, "optionalDependencies": { "lightningcss-android-arm64": "1.32.0", "lightningcss-darwin-arm64": "1.32.0", "lightningcss-darwin-x64": "1.32.0", "lightningcss-freebsd-x64": "1.32.0", "lightningcss-linux-arm-gnueabihf": "1.32.0", "lightningcss-linux-arm64-gnu": "1.32.0", "lightningcss-linux-arm64-musl": "1.32.0", "lightningcss-linux-x64-gnu": "1.32.0", "lightningcss-linux-x64-musl": "1.32.0", "lightningcss-win32-arm64-msvc": "1.32.0", "lightningcss-win32-x64-msvc": "1.32.0" } }, "sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ=="],
 
