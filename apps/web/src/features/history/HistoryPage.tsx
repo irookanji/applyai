@@ -23,6 +23,8 @@ type HistoryPageProps = {
 };
 
 export const HistoryPage = ({ onReapply }: HistoryPageProps) => {
+  'use no memo';
+
   useSignals();
 
   const statusFilter = statusFilter$.value;

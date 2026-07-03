@@ -21,6 +21,8 @@ type NewApplicationPageProps = {
 };
 
 export const NewApplicationPage = ({ reapplySeed }: NewApplicationPageProps) => {
+  'use no memo';
+
   useSignals();
 
   const step = wizardStep$.value;

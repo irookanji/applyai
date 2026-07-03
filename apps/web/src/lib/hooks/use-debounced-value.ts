@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { debounce } from '@/lib/utils';
 
 export const useDebouncedValue = <T>(value: T, delay: number): T => {
   const [debouncedValue, setDebouncedValue] = useState(value);
-  const setDebounced = useMemo(
-    () => debounce((next: T) => setDebouncedValue(next), delay),
-    [delay],
-  );
+  const setDebounced = debounce((next: T) => setDebouncedValue(next), delay);
 
   useEffect(() => {
     setDebounced(value);

@@ -1,6 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import type { Application, ApplicationStatus, ApplicationsListResponse } from '@applyai/shared';
 
@@ -70,13 +70,9 @@ export const useDebouncedNotesSave = (applicationId: string) => {
   const applicationIdRef = useRef(applicationId);
   applicationIdRef.current = applicationId;
 
-  return useMemo(
-    () =>
-      debounce((notes: string) => {
-        void api.updateApplication(applicationIdRef.current, { notes }).then((updated) => {
-          syncApplicationInCache(queryClient, updated);
-        });
-      }, 500),
-    [queryClient],
-  );
+  return debounce((notes: string) => {
+    void api.updateApplication(applicationIdRef.current, { notes }).then((updated) => {
+      syncApplicationInCache(queryClient, updated);
+    });
+  }, 500);
 };

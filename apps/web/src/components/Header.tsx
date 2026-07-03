@@ -7,6 +7,8 @@ import { useMasterCvQuery } from '@/lib/queries/master-cv';
 import { mode$, openHistory, openNewApplication } from '@/signals/app';
 
 export const Header = () => {
+  'use no memo';
+
   useSignals();
   const mode = mode$.value;
 

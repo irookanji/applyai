@@ -9,6 +9,8 @@ import { NewApplicationPage } from '@/features/new-application/NewApplicationPag
 import { mode$, openNewApplication, wizardStep$ } from '@/signals/app';
 
 export const App = () => {
+  'use no memo';
+
   useSignals();
   const mode = mode$.value;
   const [reapplySeed, setReapplySeed] = useState<{

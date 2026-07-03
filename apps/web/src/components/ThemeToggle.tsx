@@ -4,6 +4,8 @@ import { ThemeToggleIcon } from './ThemeToggleIcon';
 import { theme$, toggleTheme } from '@/signals/theme';
 
 export const ThemeToggle = () => {
+  'use no memo';
+
   useSignals();
   const isDark = theme$.value === 'dark';
 
