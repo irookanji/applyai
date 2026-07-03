@@ -95,6 +95,27 @@ JOB POSTING:
 CANDIDATE CV:
 {cvText}`;
 
+const MAX_RETRIES = 3;
+const BASE_RETRY_DELAY_MS = 1000;
+
+const isTransientGeminiError = (error: unknown): boolean => {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const message = error.message.toLowerCase();
+
+  return (
+    message.includes('503') ||
+    message.includes('500') ||
+    message.includes('service unavailable') ||
+    message.includes('overloaded') ||
+    message.includes('high demand')
+  );
+};
+
+const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
 const toGeminiError = (error: unknown): Error => {
   if (!(error instanceof Error)) {
     return new Error('Gemini request failed.');
@@ -114,7 +135,52 @@ const toGeminiError = (error: unknown): Error => {
     );
   }
 
+  if (isTransientGeminiError(error)) {
+    return new Error(
+      'Gemini is temporarily overloaded (503). We retried a few times without luck — please wait a moment and try again.',
+    );
+  }
+
   return error;
+};
+
+type GenerativeModel = ReturnType<GoogleGenerativeAI['getGenerativeModel']>;
+type GenerateContentResult = Awaited<ReturnType<GenerativeModel['generateContent']>>;
+
+type GenerateWithRetryOptions = {
+  readonly maxRetries?: number;
+  readonly baseDelayMs?: number;
+  readonly sleep?: (ms: number) => Promise<void>;
+};
+
+/** @public Exported for unit testing of the retry/backoff behavior. */
+export const generateWithRetry = async (
+  model: Pick<GenerativeModel, 'generateContent'>,
+  prompt: string,
+  options: GenerateWithRetryOptions = {},
+): Promise<GenerateContentResult> => {
+  const maxRetries = options.maxRetries ?? MAX_RETRIES;
+  const baseDelayMs = options.baseDelayMs ?? BASE_RETRY_DELAY_MS;
+  const sleep = options.sleep ?? delay;
+
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < maxRetries; attempt += 1) {
+    try {
+      return await model.generateContent(prompt);
+    } catch (error) {
+      lastError = error;
+
+      if (!isTransientGeminiError(error) || attempt === maxRetries - 1) {
+        throw error;
+      }
+
+      const backoffMs = baseDelayMs * 2 ** attempt + Math.floor(Math.random() * 250);
+      await sleep(backoffMs);
+    }
+  }
+
+  throw lastError;
 };
 
 export const generateApplicationContent = async (
@@ -142,7 +208,7 @@ export const generateApplicationContent = async (
   ).replace('{cvText}', cvText)}`;
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await generateWithRetry(model, prompt);
     const text = result.response.text();
 
     if (!text.trim()) {
