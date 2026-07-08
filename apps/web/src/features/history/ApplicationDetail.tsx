@@ -5,7 +5,6 @@ import { APPLICATION_STATUSES, formatApplicationDate, statusLabels } from '@appl
 
 import { useDebouncedNotesSave, useUpdateApplicationMutation } from './queries';
 import { Badge, Button, TextAreaField } from '@/components/ui';
-import { downloadCvPdf } from '@/lib/cv-pdf';
 import { copyToClipboard } from '@/lib/utils';
 
 type ApplicationDetailProps = {
@@ -39,6 +38,15 @@ export const ApplicationDetail = ({ application, onReapply }: ApplicationDetailP
     await copyToClipboard(text);
     setCopyMessage(`${label} copied`);
     setTimeout(() => setCopyMessage(null), 2000);
+  };
+
+  const handleDownloadPdf = async () => {
+    const { downloadCvPdf } = await import('@/lib/cv-pdf');
+    await downloadCvPdf({
+      applicantName: application.applicantName,
+      masterCvText: application.masterCvText,
+      cvText: cvSent,
+    });
   };
 
   return (
@@ -78,17 +86,7 @@ export const ApplicationDetail = ({ application, onReapply }: ApplicationDetailP
         <TextAreaField label="CV sent" value={cvSent} onChange={setCvSent} rows={24} />
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => void handleCopy(cvSent, 'CV')}>Copy</Button>
-          <Button
-            onClick={() =>
-              void downloadCvPdf({
-                applicantName: application.applicantName,
-                masterCvText: application.masterCvText,
-                cvText: cvSent,
-              })
-            }
-          >
-            Download PDF
-          </Button>
+          <Button onClick={() => void handleDownloadPdf()}>Download PDF</Button>
           <Button
             onClick={() =>
               updateMutation.mutate({ cvSent }, { onSuccess: () => setCopyMessage('CV saved') })
