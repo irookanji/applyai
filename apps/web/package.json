@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@applyai/shared": "workspace:*",
-    "@preact/signals-react": "3.10.2",
+    "@preact/signals-react": "3.10.3",
     "@react-pdf/renderer": "4.5.1",
     "@tanstack/react-form": "1.33.0",
     "@tanstack/react-query": "5.101.2",
