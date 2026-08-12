@@ -22,6 +22,7 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "knip": "knip",
+    "update:latest": "bun update --latest --recursive",
     "db:up": "docker compose up -d postgres",
     "docker:stop-app": "docker compose stop api web",
     "db:generate": "bun run --filter @applyai/db generate",
