@@ -34,9 +34,9 @@ const applicationSchema = z.object({
   notes: z.string(),
   applicantName: z.string(),
   masterCvText: z.string(),
-  appliedAt: z.string().datetime(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  appliedAt: z.iso.datetime(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 export type Application = Immutable<z.infer<typeof applicationSchema>>;
@@ -125,8 +125,8 @@ const masterCvSchema = z.object({
   id: z.string().uuid(),
   filename: z.string(),
   extractedText: z.string(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 export type MasterCv = Immutable<z.infer<typeof masterCvSchema>>;

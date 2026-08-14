@@ -1,6 +1,6 @@
 import { integer, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
-export const applicationStatusEnum = pgEnum('application_status', [
+const applicationStatusEnum = pgEnum('application_status', [
   'applied',
   'interview',
   'rejected',
@@ -36,6 +36,3 @@ export const masterCv = pgTable('master_cv', {
 });
 
 export type ApplicationRow = typeof applications.$inferSelect;
-export type ApplicationInsert = typeof applications.$inferInsert;
-export type MasterCvRow = typeof masterCv.$inferSelect;
-export type MasterCvInsert = typeof masterCv.$inferInsert;
