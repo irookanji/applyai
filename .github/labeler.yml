@@ -1,0 +1,47 @@
+maintenance:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/labeler.yml
+          - .github/settings.yml
+          - .cursor/**
+          - .husky/**
+          - .vscode/**
+          - biome.json
+          - knip.json
+          - package.json
+          - bun.lock
+          - tsconfig.base.json
+          - .gitignore
+          - .env.example
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/workflows/**
+
+infrastructure:
+  - changed-files:
+      - any-glob-to-any-file:
+          - docker-compose.yml
+          - "**/Dockerfile"
+          - start.sh
+
+api:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/api/**
+
+web:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/web/**
+
+db:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/db/**
+
+shared:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/shared/**
