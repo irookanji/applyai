@@ -12,6 +12,6 @@
     "test": "bun test"
   },
   "dependencies": {
-    "zod": "4.6.1"
+    "zod": "4.6.2"
   }
 }
