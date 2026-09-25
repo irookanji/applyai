@@ -14,6 +14,7 @@
     "@applyai/shared": "workspace:*",
     "@mozilla/readability": "0.6.0",
     "drizzle-orm": "0.45.2",
+    "effect": "4.0.0-rc.115",
     "hono": "4.13.8",
     "linkedom": "0.18.13",
     "pdf-parse": "2.4.5"

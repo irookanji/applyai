@@ -19,7 +19,7 @@ AI-powered job application assistant that tailors your CV, drafts cover letters,
 | Layer | Tech |
 |-------|------|
 | Frontend | React 19, Vite, Tailwind v4 — [apps/web/README.md](apps/web/README.md) |
-| Backend | Hono on Bun — [apps/api/README.md](apps/api/README.md) |
+| Backend | Hono on Bun, [Effect v4](https://effect.website/docs/v4/onboarding) — [apps/api/README.md](apps/api/README.md) |
 | Database | PostgreSQL + Drizzle ORM (`packages/db`) |
 | AI | Google Gemini (API service in `apps/api`) |
 | Tooling | Biome (lint/format), Knip, [Bun test](https://bun.com/docs/test) |

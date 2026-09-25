@@ -1,0 +1,16 @@
+---
+description: Use Effect v4 for API programs — typed errors, concurrency, and resources
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# Effect v4
+
+API programs follow [Effect v4 onboarding](https://effect.website/docs/v4/onboarding). Install `effect@rc` (currently `4.0.0-rc.115`). Do not use Effect 3.
+
+Read that onboarding path before writing or changing Effect code. It is the source of truth for the `Effect` type, generators, typed errors, and basic concurrency.
+
+- Describe work as `Effect` values. Compose with `Effect.gen` and `yield*`.
+- Run effects at the edge with `Effect.runSync` or `Effect.runPromise`. Keep Bun's server default export synchronous.
+- Model expected failures as typed errors. Prefer Effect retries, timeouts, and structured concurrency over ad-hoc `try/catch` and raw `Promise` coordination.
+- `Effect.gen` callbacks stay `function*` (see the arrow-functions rule).

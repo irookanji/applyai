@@ -9,6 +9,7 @@ Full-stack setup, product features, and CI: [../../README.md](../../README.md).
 | Area | Tech |
 |------|------|
 | Runtime | [Bun](https://bun.sh) |
+| Programs | [Effect v4](https://effect.website/docs/v4/onboarding) (`effect@rc`) |
 | HTTP | [Hono](https://hono.dev) |
 | Database | PostgreSQL via `@applyai/db` (Drizzle ORM) |
 | Validation | Zod schemas in `@applyai/shared` |
