@@ -13,8 +13,8 @@
     "@applyai/db": "workspace:*",
     "@applyai/shared": "workspace:*",
     "@mozilla/readability": "0.6.0",
-    "drizzle-orm": "0.45.3",
-    "effect": "4.0.1",
+    "drizzle-orm": "0.45.4",
+    "effect": "4.0.2",
     "hono": "4.13.13",
     "linkedom": "0.18.13",
     "pdf-parse": "2.4.5"
