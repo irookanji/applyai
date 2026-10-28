@@ -16,7 +16,7 @@
     "drizzle-orm": "0.45.4",
     "effect": "4.0.5",
     "hono": "4.13.13",
-    "linkedom": "0.18.13",
+    "linkedom": "0.18.14",
     "pdf-parse": "2.4.5"
   }
 }
