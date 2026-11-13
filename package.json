@@ -31,16 +31,10 @@
     "start": "./start.sh",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc,css}": [
-      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
-    ]
-  },
   "devDependencies": {
     "@biomejs/biome": "2.6.5",
     "@types/bun": "1.4.4",
     "husky": "9.1.7",
-    "knip": "6.44.1",
-    "lint-staged": "17.6.0"
+    "knip": "6.44.1"
   }
 }
