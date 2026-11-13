@@ -6,16 +6,16 @@ Full-stack setup, product features, and CI: [../../README.md](../../README.md).
 
 ## Stack
 
-| Area | Tech |
-|------|------|
-| Runtime | [Bun](https://bun.sh) |
-| Programs | [Effect v4](https://effect.website/docs/v4/onboarding) (`effect@rc`) |
-| HTTP | [Hono](https://hono.dev) |
-| Database | PostgreSQL via `@applyai/db` (Drizzle ORM) |
-| Validation | Zod schemas in `@applyai/shared` |
-| AI | Google Gemini (`@google/generative-ai`) |
-| Job URLs | `linkedom` + `@mozilla/readability` |
-| PDFs | `pdf-parse` |
+| Area       | Tech                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| Runtime    | [Bun](https://bun.sh)                                                |
+| Programs   | [Effect v4](https://effect.website/docs/v4/onboarding) (`effect@rc`) |
+| HTTP       | [Hono](https://hono.dev)                                             |
+| Database   | PostgreSQL via `@applyai/db` (Drizzle ORM)                           |
+| Validation | Zod schemas in `@applyai/shared`                                     |
+| AI         | Google Gemini (`@google/generative-ai`)                              |
+| Job URLs   | `linkedom` + `@mozilla/readability`                                  |
+| PDFs       | `pdf-parse`                                                          |
 
 ## Project structure
 
@@ -57,11 +57,11 @@ bun run dev:api
 
 Workspace scripts (`apps/api/package.json`):
 
-| Script | Command |
-|--------|---------|
-| `dev` | `bun --watch --env-file=../../.env src/index.ts` |
-| `start` | `bun --env-file=../../.env src/index.ts` |
-| `test` | `bun test` |
+| Script  | Command                                          |
+| ------- | ------------------------------------------------ |
+| `dev`   | `bun --watch --env-file=../../.env src/index.ts` |
+| `start` | `bun --env-file=../../.env src/index.ts`         |
+| `test`  | `bun test`                                       |
 
 From root: `bun run dev:api` · `bun run test:api`
 
@@ -69,28 +69,28 @@ From root: `bun run dev:api` · `bun run test:api`
 
 Configured in the repo root `.env` (see [.env.example](../../.env.example)). Defaults in `src/config.ts`.
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `GEMINI_API_KEY` | Google AI Studio API key (required for generation) |
-| `GEMINI_MODEL` | Model id (default `gemini-2.5-flash-lite`; e.g. `gemini-2.5-flash` for higher quality) |
-| `CORS_ORIGIN` | Allowed frontend origin (default `http://localhost:5173`) |
-| `UPLOADS_DIR` | Directory for uploaded CV PDFs (default `./uploads`, resolved from repo root) |
-| `PORT` | Listen port (default `3000`) |
+| Variable         | Description                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| `DATABASE_URL`   | PostgreSQL connection string                                                           |
+| `GEMINI_API_KEY` | Google AI Studio API key (required for generation)                                     |
+| `GEMINI_MODEL`   | Model id (default `gemini-2.5-flash-lite`; e.g. `gemini-2.5-flash` for higher quality) |
+| `CORS_ORIGIN`    | Allowed frontend origin (default `http://localhost:5173`)                              |
+| `UPLOADS_DIR`    | Directory for uploaded CV PDFs (default `./uploads`, resolved from repo root)          |
+| `PORT`           | Listen port (default `3000`)                                                           |
 
 ## API endpoints
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| GET | `/health` | Health check |
-| GET | `/applications` | List with filters and stats |
-| GET | `/applications/:id` | Application detail |
-| PATCH | `/applications/:id` | Update status, notes, CV, or cover letter |
-| POST | `/applications/check-duplicate` | Duplicate pre-check (JSON) |
-| POST | `/applications/generate` | AI generation pipeline (`multipart/form-data`) |
-| POST | `/applications` | Save application (JSON) |
-| GET | `/cv/master` | Master CV metadata |
-| POST | `/cv/master` | Upload master CV PDF (`multipart/form-data`) |
+| Method | Route                           | Description                                    |
+| ------ | ------------------------------- | ---------------------------------------------- |
+| GET    | `/health`                       | Health check                                   |
+| GET    | `/applications`                 | List with filters and stats                    |
+| GET    | `/applications/:id`             | Application detail                             |
+| PATCH  | `/applications/:id`             | Update status, notes, CV, or cover letter      |
+| POST   | `/applications/check-duplicate` | Duplicate pre-check (JSON)                     |
+| POST   | `/applications/generate`        | AI generation pipeline (`multipart/form-data`) |
+| POST   | `/applications`                 | Save application (JSON)                        |
+| GET    | `/cv/master`                    | Master CV metadata                             |
+| POST   | `/cv/master`                    | Upload master CV PDF (`multipart/form-data`)   |
 
 ### `GET /applications`
 
@@ -120,11 +120,11 @@ Response: `{ isDuplicate, existingApplication }`.
 
 `multipart/form-data` fields:
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `jobUrl` | One of URL or description | Vacancy URL (fetched and parsed) |
-| `jobDescription` | One of URL or description | Pasted posting text |
-| `cvFile` | No | PDF upload; falls back to stored master CV |
+| Field            | Required                  | Description                                |
+| ---------------- | ------------------------- | ------------------------------------------ |
+| `jobUrl`         | One of URL or description | Vacancy URL (fetched and parsed)           |
+| `jobDescription` | One of URL or description | Pasted posting text                        |
+| `cvFile`         | No                        | PDF upload; falls back to stored master CV |
 
 Pipeline: resolve job text → resolve CV text (upload or DB) → Gemini → duplicate check → preview JSON (`companyName`, `jobTitle`, `tailoredCv`, `coverLetter`, `matchScore`, `keyRequirements`, `isDuplicate`, …).
 
@@ -165,10 +165,10 @@ bun run test:api
 bun test
 ```
 
-| Area | Coverage |
-|------|----------|
-| `app.test.ts` | Health route, app wiring |
-| `services/job-parser.test.ts` | URL/description resolution |
+| Area                            | Coverage                   |
+| ------------------------------- | -------------------------- |
+| `app.test.ts`                   | Health route, app wiring   |
+| `services/job-parser.test.ts`   | URL/description resolution |
 | `services/applications.test.ts` | CRUD, list, stats, hashing |
 
 ## Docker
@@ -183,7 +183,7 @@ Full stack: `docker compose up --build` from the repo root.
 
 ## Related packages
 
-| Package | Role |
-|---------|------|
-| `@applyai/db` | Drizzle schema, migrations, `Db` type injected per request |
-| `@applyai/shared` | Zod request/response types shared with the web app |
+| Package           | Role                                                       |
+| ----------------- | ---------------------------------------------------------- |
+| `@applyai/db`     | Drizzle schema, migrations, `Db` type injected per request |
+| `@applyai/shared` | Zod request/response types shared with the web app         |

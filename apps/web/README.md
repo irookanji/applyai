@@ -6,16 +6,16 @@ Monorepo setup and CI: [../../README.md](../../README.md) · REST API: [../api/R
 
 ## Stack
 
-| Area | Tech |
-|------|------|
-| UI | React 19, TypeScript |
-| Build | Vite 8, `@vitejs/plugin-react` |
-| Styling | Tailwind CSS v4 (`@tailwindcss/vite`) |
-| Server state | TanStack Query |
-| Forms | TanStack Form (wizard steps) |
+| Area           | Tech                                     |
+| -------------- | ---------------------------------------- |
+| UI             | React 19, TypeScript                     |
+| Build          | Vite 8, `@vitejs/plugin-react`           |
+| Styling        | Tailwind CSS v4 (`@tailwindcss/vite`)    |
+| Server state   | TanStack Query                           |
+| Forms          | TanStack Form (wizard steps)             |
 | UI / nav state | Preact Signals (`@preact/signals-react`) |
-| PDF export | `@react-pdf/renderer` |
-| Types | `@applyai/shared` |
+| PDF export     | `@react-pdf/renderer`                    |
+| Types          | `@applyai/shared`                        |
 
 ## Project structure
 
@@ -49,11 +49,11 @@ Open [http://localhost:5173](http://localhost:5173).
 
 Vite proxies `/api` → `http://localhost:3000` (paths rewritten without the `/api` prefix). The client uses `fetch('/api/...')` in `src/lib/api.ts`.
 
-| Script | Description |
-|--------|-------------|
-| `dev` | Vite dev server |
-| `build` | `tsc --noEmit` + production bundle |
-| `preview` | Serve production build locally |
+| Script    | Description                        |
+| --------- | ---------------------------------- |
+| `dev`     | Vite dev server                    |
+| `build`   | `tsc --noEmit` + production bundle |
+| `preview` | Serve production build locally     |
 
 Root: `bun run dev:web` · `bun run build` (web only via workspace filter).
 
