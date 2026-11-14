@@ -15,7 +15,7 @@
     "@mozilla/readability": "0.6.0",
     "drizzle-orm": "0.45.4",
     "effect": "4.1.2",
-    "hono": "4.13.16",
+    "hono": "4.13.17",
     "linkedom": "0.18.15",
     "pdf-parse": "2.4.5"
   }
